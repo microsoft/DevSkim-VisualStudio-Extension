@@ -1,5 +1,5 @@
-DevSkim Plugin for Sublime Text
-===============================
+DevSkim Plugin for Visual Studio
+================================
 
 The plugin implements a security linter within the Visual Studio 2015, leveraging the rules from the [DevSkim-Rules](https://github.com/Microsoft/DevSkim-Rules) repo. It helps software engineers to write secure code by flagging potentially dangerous calls, and gives in-context advice for remediation.
 
