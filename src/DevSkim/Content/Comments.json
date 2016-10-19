@@ -1,0 +1,73 @@
+﻿[
+  {
+    "content_type": [
+      "C/C++",
+      "CSharp",
+      "CoffeeScript",
+      "code++.F#",
+      "code++.Go",
+      "code++.Groovy",
+      "code++.Jade",
+      "code++.Objective-C",
+      "code++.Rust",
+      "code++.Swift",
+      "JavaScript",
+      "Java",
+      "TypeScript",
+      "PHP"
+    ],    
+    "preffix": "//",
+    "suffix": ""
+  },
+  {
+    "content_type": [
+      "code++.Perl",
+      "code++.Perl 6",
+      "code++.R",
+      "code++.Shell Script (Bash)",
+      "code++.Ruby",
+      "code++.YAML",
+      "InBoxPowerShell",      
+      "PowerShell",
+      "Python"
+    ],    
+    "preffix": "#",
+    "suffix": ""
+  },
+  {
+    "content_type": [
+      "code++.Lua",
+      "SQL Server Tools"
+    ],    
+    "preffix": "--",
+    "suffix": ""
+  },
+  {
+    "content_type": [
+      "code++.Clojure"
+    ],
+    "preffix": ";;",
+    "suffix": ""
+  },
+  {
+    "content_type": [
+      "Basic"
+    ],
+    "preffix": "'",
+    "suffix": ""
+  },
+  {
+    "content_type": [
+      "code++.XAML"
+    ],
+    "preffix": "<!--",
+    "suffix": "-->"
+  },
+  {
+    "content_type": [
+      "code++.Batch File"
+    ],
+    "preffix": "REM",
+    "suffix": ""
+  }
+]

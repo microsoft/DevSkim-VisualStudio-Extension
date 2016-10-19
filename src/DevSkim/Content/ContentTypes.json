@@ -1,0 +1,132 @@
+﻿[
+  {
+    "vs_type": "C/C++",
+    "ds_types": [ "c", "cpp" ]
+  },
+  {
+    "vs_type": "CSharp",
+    "ds_types": [ "csharp" ]
+  },
+  {
+    "vs_type": "Basic",
+    "ds_types": [ "vb" ]
+  },
+  {
+    "vs_type": "Python",
+    "ds_types": [ "python" ]
+  },
+
+
+  {
+    "vs_type": "JavaScript",
+    "ds_types": [ "javascript", "javascriptreact" ]
+  },
+  {
+    "vs_type": "TypeScript",
+    "ds_types": [ "typescript", "typescriptreact" ]
+  },
+  {
+    "vs_type": "CoffeeScript",
+    "ds_types": [ "coffeescript" ]
+  },
+  
+
+  {
+    "vs_type": "Java",
+    "ds_types": ["java" ]
+  },
+  {
+    "vs_type": "code++.Objective-C",
+    "ds_types": [ "objective-c" ]
+  },
+  {
+    "vs_type": "code++.Swift",
+    "ds_types": [ "swift" ]
+  },
+
+
+  {
+    "vs_type": "code++.Perl",
+    "ds_types": [ "perl" ]
+  },
+  {
+    "vs_type": "code++.Perl 6",
+    "ds_types": [ "perl6" ]
+  },
+  {
+    "vs_type": "code++.Ruby",
+    "ds_types": ["ruby" ]
+  },
+  {
+    "vs_type": "code++.Lua",
+    "ds_types": [ "lua" ]
+  },
+  {
+    "vs_type": "code++.Groovy",
+    "ds_types": [ "groovy" ]
+  },
+  {
+    "vs_type": "code++.Go",
+    "ds_types": [ "go" ]
+  },
+  {
+    "vs_type": "code++.Rust",
+    "ds_types": [ "rust" ]
+  },
+  {
+    "vs_type": "code++.Jade",
+    "ds_types": [ "jade" ]
+  },
+  {
+    "vs_type": "code++.Clojure",
+    "ds_types": [ "clojure" ]
+  },
+  {
+    "vs_type": "code++.R",
+    "ds_types": [ "r" ]
+  },
+  {
+    "vs_type": "code++.YAML",
+    "ds_types": [ "yaml" ]
+  },
+  {
+    "vs_type": "code++.XAML",
+    "ds_types": [ "xaml" ]
+  },
+  {
+    "vs_type": "code++.F#",
+    "ds_types": [ "fsharp" ]
+  },
+  {
+    "vs_type": "PHP",
+    "ds_types": [ "php" ]
+  },
+
+
+  {
+    "vs_type": "PowerShell",
+    "ds_types": [ "powershell" ]
+  },
+  {
+    "vs_type": "InBoxPowerShell",
+    "ds_types": [ "powershell" ]
+  },
+  {
+    "vs_type": "code++.Batch File",
+    "ds_types": [ "bat" ]
+  },
+  {
+    "vs_type": "code++.Shell Script (Bash)",
+    "ds_types": [ "shellscript" ]
+  },
+
+
+  {
+    "vs_type": "SQL Server Tools",
+    "ds_types": [ "sql" ]
+  },
+  {
+    "vs_type": "plaintext",
+    "ds_types": [ "plaintext" ]
+  }
+]
