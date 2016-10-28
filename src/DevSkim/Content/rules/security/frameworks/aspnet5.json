@@ -29,7 +29,7 @@
                 "type": "regex_substitute",
                 "name": "Change to inherit from Controller",
                 "search": "(class [^\\s]+Controller)(([\\s{]*$)|(\\s*:\\s*(?!.*?(Controller)).*))",
-                "replace": "\\1 : Controller"
+                "replace": "$1 : Controller"
             }
         ]
     }

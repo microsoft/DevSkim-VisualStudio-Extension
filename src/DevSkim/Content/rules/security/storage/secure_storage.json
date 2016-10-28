@@ -24,7 +24,7 @@
                 "type": "regex_substitute",
                 "name": "Add entropy placeholder",
                 "search": "(ProtectedData\\.Protect[^,]+,\\s*)null(.*)",
-                "replace": "\\1<entropy>\\2"
+                "replace": "$1<entropy>$2"
             }
         ]
     },
@@ -44,7 +44,7 @@
         "rule_info": "https://github.com/microsoft/devskim/guidance/DS191340.md",
         "patterns": [
             {
-                "pattern": "NSUserDefaults \\*(.*) = \\[NSUserDefaults standardUserDefaults\\];(\\n.*){1,5}\\1 .*setString:(password|key)",
+                "pattern": "NSUserDefaults \\*(.*) = \\[NSUserDefaults standardUserDefaults\\];(\\n.*){1,5}$1 .*setString:(password|key)",
                 "type": "regex"
             }
         ],

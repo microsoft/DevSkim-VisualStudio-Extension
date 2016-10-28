@@ -24,7 +24,7 @@
                 "type": "regex_substitute",
                 "name": "Disable external entity resolution",
                 "search": "x.setShouldResolveExternalEntities = NO;",
-                "replace": "\\1NO"
+                "replace": "$1NO"
             }
         ]
     },
@@ -53,7 +53,7 @@
                 "type": "regex_substitute",
                 "name": "Disable external entity resolution",
                 "search": "(shouldResolveExternalEntities\\s*=\\s*)(TRUE)",
-                "replace": "\\1FALSE"
+                "replace": "$1FALSE"
             }
         ]
     },
@@ -82,7 +82,7 @@
                 "type": "regex_substitute",
                 "name": "Disable external entity resolution",
                 "search": "(setShouldResolveExternalEntities:\\s*)(YES)",
-                "replace": "\\1NO"
+                "replace": "$1NO"
             }
         ]
     }

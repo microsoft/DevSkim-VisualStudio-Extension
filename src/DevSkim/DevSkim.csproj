@@ -104,11 +104,11 @@
     <Content Include="Content\ContentTypes.json">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Content\rules\security\hygiene\device_restrictions.json">
-      <IncludeInVSIX>true</IncludeInVSIX>
+    <Content Include="Content\rules\security\hygiene\localhost.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Content\rules\security\hygiene\secrets.json">
+    <Content Include="Content\rules\security\hygiene\todo.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>

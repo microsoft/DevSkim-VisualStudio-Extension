@@ -60,7 +60,7 @@
                 "type": "regex_substitute",
                 "name": "Change to memcpy_s (Recommended for VC++)",
                 "search": "\\bmemcpy\\(([^,]+),([^,]+),([^,\\)]+)\\)",
-                "replace": "memcpy_s(\\1, <size of \\1>, \\2, \\3)"
+                "replace": "memcpy_s($1, <size of $1>, $2, $3)"
             }
         ]
     }

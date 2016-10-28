@@ -25,7 +25,7 @@
                 "type": "regex_substitute",
                 "name": "Use a predefined format string",
                 "search": "\\[NSString stringWithFormat:\\s*([^@\\\"\\]]+\\])",
-                "replace": "[NSString stringWithFormat:@\"%@\", \\1"
+                "replace": "[NSString stringWithFormat:@\"%@\", $1"
             }
         ]
     }

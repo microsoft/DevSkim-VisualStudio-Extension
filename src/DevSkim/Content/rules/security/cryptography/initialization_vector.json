@@ -24,7 +24,7 @@
                 "type": "regex_substitute",
                 "name": "Add initialization vector",
                 "search": "(mcrypt_encrypt\\s*\\([^,]+,[^,]+,[^,]+,[^,]+)(\\);)",
-                "replace": "\\1, <$iv>\\2"
+                "replace": "$1, <$iv>$2"
             }
         ]
     },

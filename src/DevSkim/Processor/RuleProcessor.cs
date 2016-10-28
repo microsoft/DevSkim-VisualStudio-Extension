@@ -59,12 +59,8 @@ namespace DevSkim
         /// <returns>Fixed source code line</returns>
         public static string Fix(string text, FixRecord fixRecord)
         {
-            // Replace the Python replace pattern into regular one (\1 to $1) 
-            Regex fixr = new Regex("\\\\(\\d)");
-            string replace = fixr.Replace(fixRecord.Replace, "$$$1");
-
             Regex regex = new Regex(fixRecord.Search);
-            return regex.Replace(text, replace);
+            return regex.Replace(text, fixRecord.Replace);
         }
         #endregion
 
