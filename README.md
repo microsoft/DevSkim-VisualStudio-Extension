@@ -10,9 +10,7 @@ The plugin requires Visual Studio 2015
 
 Installation
 ------------
-If using [Visual Studio Gallery](https://visualstudiogallery.msdn.microsoft.com/), simply install the `DevSkim` package.
-
-Alternatively, you can clone the plugin and rules repos directly, build it and install the `DevSkim.vsix` file
+Clone the plugin and rules repos directly, build it and install the `DevSkim.vsix` file. This plugin will be available in the Visual Studio marketplace shortly.
 
 Platform support
 ----------------
