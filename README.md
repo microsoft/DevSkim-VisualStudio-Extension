@@ -31,7 +31,7 @@ The plugin supports both built-in and custom rules:
 
 #### Built-In Rules
 
-Built-in rules come from the [DevSkim-Rules](https://github.com/Microsoft/DevSkim-Rules.git) repo, and should be stored
+Built-in rules come from the [DevSkim](https://github.com/Microsoft/DevSkim) repo, and should be stored
 in the `rules` directory within the DevSkim directory.
 
 Rules are organized by subdirectory and file, but are flattened internally when loaded.
