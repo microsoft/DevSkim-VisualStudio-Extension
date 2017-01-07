@@ -19,7 +19,7 @@ The DevSkim project is distributed across multiple repositories, so try to file 
 * [DevSkim-SublimeText](https://github.com/Microsoft/DevSkim-SublimeText/) - Sublime Text Plugin
 * [DevSkim-VSCode](https://github.com/Microsoft/DevSkim-VSCode/) - VSCode Plugin
 * [DevSkim-VisualStudio](https://github.com/Microsoft/DevSkim-VisualStudio/) - Visual Studio Plugin
-* [DevSkim-Rules](https://github.com/Microsoft/DevSkim-Rules/) - Common Rules
+* [DevSkim](https://github.com/Microsoft/DevSkim/) - Common Rules
 
 If your issue is a question then please ask the question on [Stack Overflow](https://stackoverflow.com/questions/tagged/devskim)
 using the tag `devskim`.
