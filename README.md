@@ -1,7 +1,7 @@
 DevSkim Plugin for Visual Studio
 ================================
 
-The plugin implements a security linter within the Visual Studio 2015, leveraging the rules from the [DevSkim-Rules](https://github.com/Microsoft/DevSkim-Rules) repo. It helps software engineers to write secure code by flagging potentially dangerous calls, and gives in-context advice for remediation.
+The plugin implements a security linter within the Visual Studio 2015, leveraging the rules from the [DevSkim](https://github.com/Microsoft/DevSkim) repo. It helps software engineers to write secure code by flagging potentially dangerous calls, and gives in-context advice for remediation.
 
 ### PUBLIC PREVIEW
 
@@ -9,10 +9,7 @@ DevSkim is currently in *public preview*. We're looking forward to working with 
 to improve both the scanning engines and rules over the next few months, and welcome your feedback
 and contributions!
 
-Requirements
---------------
-
-The plugin requires Visual Studio 2015
+![DevSkim Demo](https://github.com/Microsoft/DevSkim-VisualStudio-Plugin/raw/master/doc/DevSkim-VisualStudio-Demo-1.gif)
 
 Installation
 ------------
@@ -24,9 +21,9 @@ Platform support
 
 Microsoft Windows 7 and later
 
-#### Sublime Text Version:
+#### Visual Studio:
 
-The plugin requires [Visual Studio 2015 Community](https://www.visualstudio.com/vs/community/) or commercial version
+The plugin requires [Visual Studio 2015](https://www.visualstudio.com/vs/community/)
 
 Rules System
 ------------
@@ -76,11 +73,6 @@ apply the rule to, and, optionally, a list of possible code fixes. An example ru
     }
 ]
 ```
-
-Screenshots
-------
-
-TODO
 
 Reporting Issues
 -------
