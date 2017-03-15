@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+  <Metadata>
+    <Identity Id="DevSkim.Microsoft.d2ec7842-47e2-4d1e-ae96-f27bec979faa" Version="0.9" Language="en-US" Publisher="Microsoft" />
+    <DisplayName>Microsoft DevSkim</DisplayName>
+    <Description xml:space="preserve">DevSkim is a framework of IDE extensions and Language analyzers that provide inline security analysis in the dev environment as the developer writes code.  The idea is to give the developer notification as they are introducing a security vulnerability in order to fix the issue at the point of introduction, and to help build awareness for the developer.</Description>
+    <MoreInfo>https://github.com/Microsoft/DevSkim</MoreInfo>
+    <License>Content\License.txt</License>
+    <Icon>Media\devskim.ico</Icon>
+    <PreviewImage>Media\preview.png</PreviewImage>
+    <Tags>Syntax, Security, Lint</Tags>
+  </Metadata>
+  <Installation>
+    <InstallationTarget Version="[14.0,15.0]" Id="Microsoft.VisualStudio.Community" />
+  </Installation>
+  <Dependencies>
+    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.6]" />
+    <Dependency Id="Microsoft.VisualStudio.MPF.14.0" DisplayName="Visual Studio MPF 14.0" d:Source="Installed" Version="[14.0]" />
+  </Dependencies>
+  <Assets>
+    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
+    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+  </Assets>
+</PackageManifest>

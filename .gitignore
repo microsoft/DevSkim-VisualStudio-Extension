@@ -2,7 +2,7 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/src/DevSkim/bin
-/src/DevSkim/obj
+/src/Microsoft.DevSkim.VSExtension/bin
+/src/Microsoft.DevSkim.VSExtension/obj
 /src/packages
 /src/.vs/

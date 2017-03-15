@@ -1,0 +1,52 @@
+[
+    {
+        "id": "DS188250",
+        "name": "Missing initialization vector",
+        "tags": [
+            "Cryptography.Symmetric.InitializationVector.Missing"
+        ],
+        "applies_to": [
+            "php"
+        ],
+        "severity": "important",
+        "description": "The mcrypt_encrypt function was used without an initialization vector.",
+        "replacement": "Add an initialization vector or consider a different cipher mode",
+        "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS188250.md",
+        "patterns": [
+            {
+                "pattern": "mcrypt_encrypt\\s*\\([^,]+,[^,]+,[^,]+,[^,]+\\);",
+                "type": "regex"
+            }
+        ],
+        "fix_it": [
+            {
+                "type": "regex-substitute",
+                "name": "Add initialization vector",
+                "search": "(mcrypt_encrypt\\s*\\([^,]+,[^,]+,[^,]+,[^,]+)(\\);)",
+                "replace": "$1, <$iv>$2"
+            }
+        ]
+    },
+    {
+        "id": "DS128921",
+        "name": "Hardcoded initialization vector size",
+        "tags": [
+            "Cryptography.Symmetric.InitializationVector.HardcodedSize"
+        ],
+        "applies_to": [
+            "php"
+        ],
+        "severity": "moderate",
+        "description": "An initialization vector was created to a static size, rather than determining it based on the encryption algorithm used.",
+        "replacement": "Use mcrypt_get_iv_size to get the correct IV size based on the cipher and mode.",
+        "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS128921.md",
+        "patterns": [
+            {
+                "pattern": "mcrypt_create_iv\\s*\\(\\s*\\d.*",
+                "type": "regex"
+            }
+        ],
+        "fix_it": [
+        ]
+    }
+]
