@@ -9,7 +9,7 @@ DevSkim is currently in *public preview*. We're looking forward to working with 
 to improve both the scanning engines and rules over the next few months, and welcome your feedback
 and contributions!
 
-![DevSkim Demo](https://github.com/Microsoft/DevSkim-VisualStudio-Extension/raw/master/doc/DevSkim-VisualStudio-Demo-1.gif)
+![DevSkim Demo](https://github.com/Microsoft/DevSkim-VisualStudio-Extension/raw/master/media/DevSkim-VisualStudio-Demo-1.gif)
 
 Installation
 ------------
