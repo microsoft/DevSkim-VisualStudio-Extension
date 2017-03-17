@@ -5,4 +5,5 @@
 /src/Microsoft.DevSkim.VSExtension/bin
 /src/Microsoft.DevSkim.VSExtension/obj
 /src/packages
+/src/Backup
 /src/.vs/
