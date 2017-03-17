@@ -1,8 +1,6 @@
 ﻿// Copyright (C) Microsoft. All rights reserved.
 // Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 
-using Microsoft.DevSkim;
-using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
@@ -18,7 +16,7 @@ namespace Microsoft.DevSkim.VSExtension
         public SkimShim()
         {
             processor = new RuleProcessor();
-            processor.AllowSuppressions = true;
+            processor.EnableSuppressions = true;
 
             ruleset = new Ruleset();
 
@@ -36,14 +34,19 @@ namespace Microsoft.DevSkim.VSExtension
         }
 
         /// <summary>
-        /// Indicates if there are more than issues on the given line
+        /// Indicates if there are more than one issue on the given line
         /// </summary>
         /// <param name="text">line of code</param>
         /// <param name="contenttype">VS Content Type</param>
         /// <returns>True if more than one issue exists</returns>
-        public static bool HasProblems(string text, string contenttype)
-        {
-            return (_instance.processor.Analyze(text, ContentType.GetLanguages(contenttype)).Length > 1);            
+        public static bool HasMultipleProblems(string text, string contenttype)
+        {                        
+            var list = Analyze(text, contenttype, string.Empty)
+                      .GroupBy(x => x.Issue.Rule.Id)
+                      .Select(x => x.First())
+                      .ToList();
+
+            return list.Count() > 1;            
         }
 
         /// <summary>
@@ -52,10 +55,10 @@ namespace Microsoft.DevSkim.VSExtension
         /// <param name="text">line of code</param>
         /// <param name="contenttype">VS Content Type</param>
         /// <returns>List of actionable and non-actionable issues</returns>
-        public static Problem[] Analyze(string text, string contenttype)
-        {
+        public static Problem[] Analyze(string text, string contentType, string fileName)
+        {            
             List<Problem> results = new List<Problem>();
-            Issue[] issues = _instance.processor.Analyze(text, ContentType.GetLanguages(contenttype));
+            Issue[] issues = _instance.processor.Analyze(text, _instance.GetLanguageList(contentType, fileName));
 
             // Add matches for errors
             foreach (Issue issue in issues)
@@ -73,7 +76,7 @@ namespace Microsoft.DevSkim.VSExtension
 
                 string idString = match.Groups[1].Value.Trim();
                 
-                // parse Ids.                
+                // parse Ids
                 if (idString != "all")
                 {
                     int index = match.Groups[1].Index;
@@ -98,6 +101,26 @@ namespace Microsoft.DevSkim.VSExtension
         #endregion
 
         #region Private
+
+        /// <summary>
+        /// Get list of applicable lenguages based on file name and VS content type
+        /// </summary>
+        /// <param name="contentType">Visual Studio content type</param>
+        /// <param name="fileName">Filename</param>
+        /// <returns></returns>
+        private string[] GetLanguageList(string contentType, string fileName)
+        {
+            string flang = Language.FromFileName(fileName);
+            List<string> langs = new List<string>(ContentType.GetLanguages(contentType));                
+
+            if (!langs.Contains(flang))
+            {
+                langs.Add(flang);
+            }
+
+            return langs.ToArray();
+        }
+
         /// <summary>
         /// Reloads rules based on settings
         /// </summary>
@@ -124,7 +147,6 @@ namespace Microsoft.DevSkim.VSExtension
             if (set.EnableInformationalRules) processor.SeverityLevel |= Severity.Informational;
             if (set.EnableDefenseInDepthRules) processor.SeverityLevel |= Severity.DefenseInDepth;
             if (set.EnableManualReviewRules) processor.SeverityLevel |= Severity.ManualReview;
-
         }
 
         private RuleProcessor processor;

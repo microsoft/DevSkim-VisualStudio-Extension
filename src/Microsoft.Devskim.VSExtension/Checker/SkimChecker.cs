@@ -1,7 +1,6 @@
 ﻿// Copyright (C) Microsoft. All rights reserved.
 // Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 
-using Microsoft.DevSkim;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Editor;
@@ -212,7 +211,7 @@ namespace Microsoft.DevSkim.VSExtension
                     // provide whole line to processor so it has complete overview of the scanned code                    
                     string text = line.GetText();
                     
-                    Problem[] issues = SkimShim.Analyze(text, line.Snapshot.ContentType.TypeName);
+                    Problem[] issues = SkimShim.Analyze(text, line.Snapshot.ContentType.TypeName, this.FilePath);
                     foreach(Problem result in issues)
                     {
                         int errorStart = result.Issue.Index;

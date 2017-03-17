@@ -1,13 +1,11 @@
 ﻿// Copyright (C) Microsoft. All rights reserved.
 // Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 
-using Microsoft.DevSkim;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using System;
 using System.Collections.Generic;
-using System.Resources;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,10 +20,7 @@ namespace Microsoft.DevSkim.VSExtension
         private readonly string _code;
         private readonly string _display = string.Empty;
 
-        public SuppressSuggestedAction(ITrackingSpan span, Rule rule) : this(span, rule, -1)
-        {
-
-        }
+        public SuppressSuggestedAction(ITrackingSpan span, Rule rule) : this(span, rule, -1) { }
 
         public SuppressSuggestedAction(ITrackingSpan span, Rule rule, int days)
         {
@@ -38,11 +33,11 @@ namespace Microsoft.DevSkim.VSExtension
             {
                 if (days > 0)
                 {
-                    _display = string.Format(Resources.Messages.SuppressIssue, days);
+                    _display = string.Format(Resources.Messages.SuppressIssue, rule.Id, days);
                     _suppDate = DateTime.Now.AddDays(days);
                 }
                 else
-                    _display = string.Format(Resources.Messages.SuppressIssuePermanently, days);
+                    _display = string.Format(Resources.Messages.SuppressIssuePermanently, rule.Id);
 
             }
             else
@@ -53,9 +48,10 @@ namespace Microsoft.DevSkim.VSExtension
                     _suppDate = DateTime.Now.AddDays(days);
                 }
                 else
-                    _display = string.Format(Resources.Messages.SuppressAllIssuesPermanently, days);
+                    _display = string.Format(Resources.Messages.SuppressAllIssuesPermanently);
             }            
         }
+
         public string DisplayText
         {
             get

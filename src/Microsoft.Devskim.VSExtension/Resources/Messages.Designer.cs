@@ -79,7 +79,7 @@ namespace Microsoft.DevSkim.VSExtension.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Suppress ALL issues permanently.
+        ///   Looks up a localized string similar to Suppress ALL permanently.
         /// </summary>
         internal static string SuppressAllIssuesPermanently {
             get {
@@ -88,7 +88,7 @@ namespace Microsoft.DevSkim.VSExtension.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Supresss issue for {0} days.
+        ///   Looks up a localized string similar to Suppress {0} for {1} days.
         /// </summary>
         internal static string SuppressIssue {
             get {
@@ -97,7 +97,7 @@ namespace Microsoft.DevSkim.VSExtension.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Supress issue permanently.
+        ///   Looks up a localized string similar to Suppress {0} permanently.
         /// </summary>
         internal static string SuppressIssuePermanently {
             get {
@@ -106,7 +106,7 @@ namespace Microsoft.DevSkim.VSExtension.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Suppress ALL issues for {0} days.
+        ///   Looks up a localized string similar to Suppress ALL for {0} days.
         /// </summary>
         internal static string SupressAllIssues {
             get {

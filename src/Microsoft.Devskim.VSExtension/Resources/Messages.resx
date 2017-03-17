@@ -124,15 +124,15 @@
     <value>Severity: {0}</value>
   </data>
   <data name="SuppressAllIssuesPermanently" xml:space="preserve">
-    <value>Suppress ALL issues permanently</value>
+    <value>Suppress ALL permanently</value>
   </data>
   <data name="SuppressIssue" xml:space="preserve">
-    <value>Supresss issue for {0} days</value>
+    <value>Suppress {0} for {1} days</value>
   </data>
   <data name="SuppressIssuePermanently" xml:space="preserve">
-    <value>Supress issue permanently</value>
+    <value>Suppress {0} permanently</value>
   </data>
   <data name="SupressAllIssues" xml:space="preserve">
-    <value>Suppress ALL issues for {0} days</value>
+    <value>Suppress ALL for {0} days</value>
   </data>
 </root>

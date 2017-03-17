@@ -1,7 +1,6 @@
 ﻿// Copyright (C) Microsoft. All rights reserved.
 // Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 
-using Microsoft.DevSkim;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
@@ -61,13 +60,14 @@ namespace Microsoft.DevSkim.VSExtension
 
                 suppActions.Add(new SuppressSuggestedAction(trackingSpan, error.Rule, suppressDays));
                 suppActions.Add(new SuppressSuggestedAction(trackingSpan, error.Rule));                
-                
+                                
                 // If there is multiple issues on the line, offer "Suppress all"
-                if (SkimShim.HasProblems(trackingSpan.GetText(range.Snapshot), trackingSpan.TextBuffer.ContentType.TypeName))
+                if (SkimShim.HasMultipleProblems(trackingSpan.GetText(range.Snapshot),
+                    trackingSpan.TextBuffer.ContentType.TypeName))
                 {
                     suppActions.Add(new SuppressSuggestedAction(trackingSpan, null, suppressDays));
                     suppActions.Add(new SuppressSuggestedAction(trackingSpan, null));                    
-                }
+                }                
 
                 // We don't want empty group and spacer in the pop-up menu
                 if (fixActions.Count > 0)

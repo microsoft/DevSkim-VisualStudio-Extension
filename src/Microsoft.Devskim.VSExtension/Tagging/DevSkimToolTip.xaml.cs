@@ -31,7 +31,7 @@ namespace Microsoft.DevSkim.VSExtension
 
             if (!string.IsNullOrEmpty(rule.Replecement))
             {
-                this.MessageBox.Text = string.Concat(this.MessageBox.Text, "\n\n", string.Format(Messages.FixGuidence, rule.Replecement));
+                this.MessageBox.Text = string.Concat(this.MessageBox.Text, "\n", string.Format(Messages.FixGuidence, rule.Replecement));
             }
 
             this.SeverityBox.Foreground = new SolidColorBrush(Color.FromRgb(subColor.R, subColor.G, subColor.B));

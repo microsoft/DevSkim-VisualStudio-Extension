@@ -8,10 +8,10 @@
              mc:Ignorable="d" d:DesignWidth="250" d:DesignHeight="100">
     <StackPanel>
         <TextBlock Name="TitleBox" FontWeight="Bold" FontSize="14" Foreground="OrangeRed">Security Issue</TextBlock>
-        <TextBlock Name="SeverityBox" FontWeight="Bold" Margin="0,0,0,5">Severity</TextBlock>
+        <TextBlock Name="SeverityBox" FontWeight="Bold" Margin="0,0,0,1">Severity</TextBlock>
         <TextBlock Name="MessageBox" TextWrapping="Wrap">Text</TextBlock>
         <WrapPanel>
-            <TextBlock Margin="0,7,0,0">
+            <TextBlock Margin="0,3,0,0">
                 <Hyperlink Name="Url" RequestNavigate="Url_RequestNavigate">Show details</Hyperlink>
             </TextBlock>
         </WrapPanel>
