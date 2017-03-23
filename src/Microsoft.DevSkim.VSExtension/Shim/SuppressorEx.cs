@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Microsoft.DevSkim.VSExtension
 {
-    public class SuppressorEx : Suppressor
+    public class SuppressionEx : Suppression
     {
-        public SuppressorEx(string text, string language) 
+        public SuppressionEx(string text, string language) 
             : base(text)
         {            
             _text = text;
@@ -120,6 +120,9 @@ namespace Microsoft.DevSkim.VSExtension
             return result;
         }
 
+        /// <summary>
+        /// Starting index of issues list
+        /// </summary>
         public int IssuesIndex { get; set; } = -1;
    
         private List<string> _issues = new List<string>();

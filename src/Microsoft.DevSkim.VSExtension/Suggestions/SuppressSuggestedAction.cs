@@ -122,7 +122,7 @@ namespace Microsoft.DevSkim.VSExtension
             }
 
             string fixedCode = string.Empty;            
-            SuppressorEx supp = new SuppressorEx(_code, ContentType.GetLanguages(_snapshot.ContentType.TypeName)[0]);
+            SuppressionEx supp = new SuppressionEx(_code, ContentType.GetLanguages(_snapshot.ContentType.TypeName)[0]);
             if (_rule == null)
             {
                 fixedCode = supp.SuppressAll(_suppDate);

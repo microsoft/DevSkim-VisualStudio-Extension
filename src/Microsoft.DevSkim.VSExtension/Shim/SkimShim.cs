@@ -67,7 +67,7 @@ namespace Microsoft.DevSkim.VSExtension
                 results.Add(new Problem() { Actionable = true, Issue = issue});
 
             // Get list of IDs on the ignore list
-            SuppressorEx supp = new SuppressorEx(text, contentType);
+            SuppressionEx supp = new SuppressionEx(text, contentType);
             string[] suppissues = supp.GetIssues();
             if (suppissues != null && suppissues.Count() > 0)
             {

@@ -11,7 +11,7 @@ namespace Microsoft.DevSkim.VSExtension.Tests
         {
             // Is supressed test
             string testString = "md5.new()";
-            SuppressorEx sup = new SuppressorEx(testString, "python");
+            SuppressionEx sup = new SuppressionEx(testString, "python");
             Assert.IsTrue(sup.Index < 0, "Suppression should not be flagged");
 
             // Suppress Rule test
@@ -43,7 +43,7 @@ namespace Microsoft.DevSkim.VSExtension.Tests
             string testString = "MD5 hash = new MD5CryptoServiceProvider(); //DevSkim: ignore DS126858,DS168931 until {0:yyyy}-{0:MM}-{0:dd}";
             DateTime expirationDate = DateTime.Now.AddDays(5);
 
-            SuppressorEx sup = new SuppressorEx(string.Format(testString, expirationDate), "csharp");
+            SuppressionEx sup = new SuppressionEx(string.Format(testString, expirationDate), "csharp");
             Assert.IsTrue(sup.IsIssueSuppressed("DS126858"), "Is suppressed DS126858 should be True");
             Assert.IsTrue(sup.IsIssueSuppressed("DS168931"), "Is suppressed DS168931 should be True");
 
@@ -72,7 +72,7 @@ namespace Microsoft.DevSkim.VSExtension.Tests
         public void UseCase_SuppressExistingPast_Test()
         {
             string testString = "MD5 hash = new MD5CryptoServiceProvider(); //DevSkim: ignore DS126858,DS168931 until 1980-07-15";
-            SuppressorEx sup = new SuppressorEx(testString, "csharp");
+            SuppressionEx sup = new SuppressionEx(testString, "csharp");
             Assert.IsFalse(sup.IsIssueSuppressed("DS126858"), "Is suppressed DS126858 should be True");
             Assert.IsFalse(sup.IsIssueSuppressed("DS168931"), "Is suppressed DS168931 should be True");
 
