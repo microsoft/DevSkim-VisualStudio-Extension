@@ -15,8 +15,10 @@ namespace Microsoft.DevSkim.VSExtension
     {
         public SkimShim()
         {
-            processor = new RuleProcessor();
-            processor.EnableSuppressions = true;
+            processor = new RuleProcessor()
+            {
+                EnableSuppressions = true
+            };
 
             ruleset = new Ruleset();
 
@@ -63,35 +65,26 @@ namespace Microsoft.DevSkim.VSExtension
             // Add matches for errors
             foreach (Issue issue in issues)
                 results.Add(new Problem() { Actionable = true, Issue = issue});
-            
+
             // Get list of IDs on the ignore list
-            string pattern = @"\s*DevSkim:\s+ignore\s([^\s]+)(\s+until\s\d{4}-\d{2}-\d{2}|)";
-            Regex reg = new Regex(pattern);
-
-            Match match = reg.Match(text);
-            if (match.Success)
+            SuppressorEx supp = new SuppressorEx(text, contentType);
+            string[] suppissues = supp.GetIssues();
+            if (suppissues != null && suppissues.Count() > 0)
             {
-                int suppressStart = match.Index;
-                int suppressLength = match.Length;
-
-                string idString = match.Groups[1].Value.Trim();
-                
-                // parse Ids
-                if (idString != "all")
+                int index = supp.IssuesIndex;
+                foreach (string id in suppissues)
                 {
-                    int index = match.Groups[1].Index;
-                    string[] ids = idString.Split(',');
-                    foreach(string id in ids)
+                    Issue issue = new Issue()
                     {
-                        Issue issue = new Issue();
-                        issue.Index = index;
-                        issue.Length = id.Length;
-                        issue.Rule = _instance.ruleset.First(x => x.Id == id);
+                        Index = index,
+                        Length = id.Length,
+                        Rule = _instance.ruleset.FirstOrDefault(x => x.Id == id)
+                    };
 
+                    if (issue.Rule != null)
                         results.Add(new Problem() { Actionable = false, Issue = issue });
 
-                        index += id.Length + 1;
-                    }
+                    index += id.Length + 1;
                 }
             }
 
@@ -149,7 +142,7 @@ namespace Microsoft.DevSkim.VSExtension
             if (set.EnableManualReviewRules) processor.SeverityLevel |= Severity.ManualReview;
         }
 
-        private RuleProcessor processor;
+        private RuleProcessor processor = new RuleProcessor();
         private Ruleset ruleset;
 
         private static SkimShim _instance = new SkimShim();

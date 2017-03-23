@@ -16,7 +16,7 @@ namespace Microsoft.DevSkim.VSExtension
         private readonly ITrackingSpan _span;
         private readonly ITextSnapshot _snapshot;
         private readonly Rule _rule;
-        private readonly DateTime _suppDate = DateTime.MinValue;
+        private readonly DateTime _suppDate = DateTime.MaxValue;
         private readonly string _code;
         private readonly string _display = string.Empty;
 
@@ -122,14 +122,14 @@ namespace Microsoft.DevSkim.VSExtension
             }
 
             string fixedCode = string.Empty;            
-            Suppressor supp = new Suppressor(_code, ContentType.GetLanguages(_snapshot.ContentType.TypeName)[0]);
+            SuppressorEx supp = new SuppressorEx(_code, ContentType.GetLanguages(_snapshot.ContentType.TypeName)[0]);
             if (_rule == null)
             {
                 fixedCode = supp.SuppressAll(_suppDate);
             }
             else
             {
-                fixedCode = supp.SuppressRule(_rule.Id, _suppDate);
+                fixedCode = supp.SuppressIssue(_rule.Id, _suppDate);
             }
 
             _span.TextBuffer.Replace(_span.GetSpan(_snapshot), fixedCode);
