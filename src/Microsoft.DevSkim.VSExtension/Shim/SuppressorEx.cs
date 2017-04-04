@@ -9,6 +9,11 @@ namespace Microsoft.DevSkim.VSExtension
 {
     public class SuppressionEx : Suppression
     {
+        const string KeywordPrefix = "DevSkim:";
+        const string KeywordIgnore = "ignore";
+        const string KeywordAll = "all";
+        const string KeywordUntil = "until";
+
         public SuppressionEx(string text, string language) 
             : base(text)
         {            

@@ -132,8 +132,7 @@ namespace Microsoft.DevSkim.VSExtension
                             case Severity.Important:
                             case Severity.Moderate:
                                 content = __VSERRORCATEGORY.EC_ERROR;
-                                break;
-                            case Severity.Low:
+                                break;                            
                             case Severity.DefenseInDepth:                            
                                 content = __VSERRORCATEGORY.EC_WARNING;
                                 break;

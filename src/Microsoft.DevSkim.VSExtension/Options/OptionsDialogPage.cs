@@ -35,9 +35,7 @@ namespace Microsoft.DevSkim.VSExtension
 
             optionsDialogControl.EnableImportantRules.IsChecked = _settings.EnableImportantRules;
             optionsDialogControl.EnableModerateRules.IsChecked = _settings.EnableModerateRules;
-            optionsDialogControl.EnableLowRules.IsChecked = _settings.EnableLowRules;
 
-            optionsDialogControl.EnableInformationalRules.IsChecked = _settings.EnableInformationalRules;
             optionsDialogControl.EnableDefenseInDepthRules.IsChecked = _settings.EnableDefenseInDepthRules;
             optionsDialogControl.EnableManualReviewRules.IsChecked = _settings.EnableManualReviewRules;
 
@@ -74,9 +72,7 @@ namespace Microsoft.DevSkim.VSExtension
 
             _settings.EnableImportantRules = (bool)optionsDialogControl.EnableImportantRules.IsChecked;
             _settings.EnableModerateRules = (bool)optionsDialogControl.EnableModerateRules.IsChecked;
-            _settings.EnableLowRules = (bool)optionsDialogControl.EnableLowRules.IsChecked;
 
-            _settings.EnableInformationalRules = (bool)optionsDialogControl.EnableInformationalRules.IsChecked;
             _settings.EnableDefenseInDepthRules = (bool)optionsDialogControl.EnableDefenseInDepthRules.IsChecked;
             _settings.EnableManualReviewRules = (bool)optionsDialogControl.EnableManualReviewRules.IsChecked;
 

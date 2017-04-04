@@ -44,12 +44,6 @@ namespace Microsoft.DevSkim.VSExtension
         [SettingsEntity(Name = "EnableModerateRules")]
         public bool EnableModerateRules { get; set; } = true;
 
-        [SettingsEntity(Name = "EnableLowRules")]
-        public bool EnableLowRules { get; set; } = true;
-
-        [SettingsEntity(Name = "EnableInformationalRules")]
-        public bool EnableInformationalRules { get; set; } = true;
-
         [SettingsEntity(Name = "EnableDefenseInDepthRules")]
         public bool EnableDefenseInDepthRules { get; set; } = true;
 

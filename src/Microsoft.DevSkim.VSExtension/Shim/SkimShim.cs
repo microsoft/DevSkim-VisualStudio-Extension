@@ -18,9 +18,7 @@ namespace Microsoft.DevSkim.VSExtension
             processor = new RuleProcessor()
             {
                 EnableSuppressions = true
-            };
-
-            ruleset = new Ruleset();
+            };            
 
             LoadRules();
         }
@@ -121,10 +119,11 @@ namespace Microsoft.DevSkim.VSExtension
         {
             Settings set = Settings.GetSettings();
 
-            string dir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            dir = Path.Combine(Path.Combine(dir, "Content"), "rules");
+            ruleset = new Ruleset();
+            string rulesFile = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            rulesFile = Path.Combine(Path.Combine(rulesFile, "Content"), "devskim-rules.json");
             if (set.UseDefaultRules)
-                ruleset.AddDirectory(dir, null);
+                ruleset.AddFile(rulesFile, null);
 
             if (set.UseCustomRules)
                 ruleset.AddDirectory(set.CustomRulesPath, "custom");
@@ -135,9 +134,6 @@ namespace Microsoft.DevSkim.VSExtension
 
             if (set.EnableImportantRules) processor.SeverityLevel |= Severity.Important;
             if (set.EnableModerateRules) processor.SeverityLevel |= Severity.Moderate;
-            if (set.EnableLowRules) processor.SeverityLevel |= Severity.Low;
-
-            if (set.EnableInformationalRules) processor.SeverityLevel |= Severity.Informational;
             if (set.EnableDefenseInDepthRules) processor.SeverityLevel |= Severity.DefenseInDepth;
             if (set.EnableManualReviewRules) processor.SeverityLevel |= Severity.ManualReview;
         }

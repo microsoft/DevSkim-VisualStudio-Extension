@@ -49,11 +49,9 @@
                 </Grid.ColumnDefinitions>
                 <CheckBox x:Name="EnableImportantRules" Content="Important"  Grid.Row="0" Grid.Column="0" Margin="10" HorizontalAlignment="Left" />
                 <CheckBox x:Name="EnableModerateRules" Content="Moderate"  Grid.Row="1" Grid.Column="0" Margin="10" HorizontalAlignment="Left" />
-                <CheckBox x:Name="EnableLowRules" Content="Low"  Grid.Row="2" Grid.Column="0" Margin="10" HorizontalAlignment="Left" />
 
-                <CheckBox x:Name="EnableInformationalRules" Content="Informational"  Grid.Row="0" Grid.Column="1" Margin="10" HorizontalAlignment="Left" />
-                <CheckBox x:Name="EnableDefenseInDepthRules" Content="Defense In Depth"  Grid.Row="1" Grid.Column="1" Margin="10" HorizontalAlignment="Left" />
-                <CheckBox x:Name="EnableManualReviewRules" Content="Manual Review"  Grid.Row="2" Grid.Column="1" Margin="10" HorizontalAlignment="Left" />
+                <CheckBox x:Name="EnableDefenseInDepthRules" Content="Defense In Depth"  Grid.Row="2" Grid.Column="0" Margin="10" HorizontalAlignment="Left" />
+                <CheckBox x:Name="EnableManualReviewRules" Content="Manual Review"  Grid.Row="0" Grid.Column="1" Margin="10" HorizontalAlignment="Left" />
             </Grid>
         </GroupBox>
         <GroupBox x:Name="groupBox2" Header="Issues" HorizontalAlignment="Stretch"  VerticalAlignment="Top" Grid.Row="2">
