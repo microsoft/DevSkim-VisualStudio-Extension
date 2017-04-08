@@ -36,7 +36,7 @@ namespace Microsoft.DevSkim.VSExtension
             optionsDialogControl.EnableImportantRules.IsChecked = _settings.EnableImportantRules;
             optionsDialogControl.EnableModerateRules.IsChecked = _settings.EnableModerateRules;
 
-            optionsDialogControl.EnableDefenseInDepthRules.IsChecked = _settings.EnableDefenseInDepthRules;
+            optionsDialogControl.EnableBestPracticeRules.IsChecked = _settings.EnableBestPracticeRules;
             optionsDialogControl.EnableManualReviewRules.IsChecked = _settings.EnableManualReviewRules;
 
             optionsDialogControl.SuppressDays.Text          = _settings.SuppressDays.ToString();
@@ -73,7 +73,7 @@ namespace Microsoft.DevSkim.VSExtension
             _settings.EnableImportantRules = (bool)optionsDialogControl.EnableImportantRules.IsChecked;
             _settings.EnableModerateRules = (bool)optionsDialogControl.EnableModerateRules.IsChecked;
 
-            _settings.EnableDefenseInDepthRules = (bool)optionsDialogControl.EnableDefenseInDepthRules.IsChecked;
+            _settings.EnableBestPracticeRules = (bool)optionsDialogControl.EnableBestPracticeRules.IsChecked;
             _settings.EnableManualReviewRules = (bool)optionsDialogControl.EnableManualReviewRules.IsChecked;
 
             _settings.CustomRulesPath   = optionsDialogControl.CustomRulesPath.Text;

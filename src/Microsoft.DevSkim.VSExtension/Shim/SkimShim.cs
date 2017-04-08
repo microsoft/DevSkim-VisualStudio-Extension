@@ -134,7 +134,7 @@ namespace Microsoft.DevSkim.VSExtension
 
             if (set.EnableImportantRules) processor.SeverityLevel |= Severity.Important;
             if (set.EnableModerateRules) processor.SeverityLevel |= Severity.Moderate;
-            if (set.EnableDefenseInDepthRules) processor.SeverityLevel |= Severity.DefenseInDepth;
+            if (set.EnableBestPracticeRules) processor.SeverityLevel |= Severity.BestPractice;
             if (set.EnableManualReviewRules) processor.SeverityLevel |= Severity.ManualReview;
         }
 

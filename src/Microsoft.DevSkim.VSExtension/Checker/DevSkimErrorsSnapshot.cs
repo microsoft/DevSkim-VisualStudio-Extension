@@ -133,7 +133,7 @@ namespace Microsoft.DevSkim.VSExtension
                             case Severity.Moderate:
                                 content = __VSERRORCATEGORY.EC_ERROR;
                                 break;                            
-                            case Severity.DefenseInDepth:                            
+                            case Severity.BestPractice:                            
                                 content = __VSERRORCATEGORY.EC_WARNING;
                                 break;
                             default:
