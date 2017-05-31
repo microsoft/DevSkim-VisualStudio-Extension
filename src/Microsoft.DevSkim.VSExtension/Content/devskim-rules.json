@@ -18,7 +18,7 @@
     "severity": "moderate",
     "patterns": [
       {
-        "pattern": "\\b(strncat|_getts|_getws|_snprintf|_sntprintf|_snwprintf|_stprintf|_tcsat|_tcscpy|_tcslen|_tcsncpy|_vsnprintf|_vsntprintf|_vsnwprintf|_vstprintf|alloca|asctime|atof|atoi|atoll|bsearch|ctime|fopen|fprintf|freopen|fscanf|fwprintf|fwscanf|getenv|getwd|gmtime|localtime|lstrcat|lstrcpy|mbsrtowcs|mbstowcs|memmove|mktemp|printf|qsort|rewind|scanf|setbuf|snprintf|sprintf|sscanf|strcatbuff|strerror|strlen|strtok|swprintf|swscanf|tmpnam|vfprintf|vfscanf|vfwscanf|vprintf|vscanf|vsnprintf|vsprintf|vsscanf|vswprintf|vswscanf|vwprintf|vwscanf|wcrtomb|wcrtombs|wcscat|wcscpy|wcslen|wcsncat|wcsncpy|wcsrtombs|wcstok|wctomb|wmemcpy|wmemmove|wnsprintf|wprintf|wscanf|wsprintf|wvnsprintf|wvsprintf)\\b",
+        "pattern": "\\b(sprintf|_getts|_getws|_snprintf|_sntprintf|_snwprintf|_stprintf|_tcsat|_tcscpy|_tcslen|_tcsncpy|_vsnprintf|_vsntprintf|_vsnwprintf|_vstprintf|alloca|asctime|atof|atoi|atoll|bsearch|ctime|fopen|fprintf|freopen|fscanf|fwprintf|fwscanf|getenv|getwd|gmtime|localtime|lstrcat|lstrcpy|mbsrtowcs|mbstowcs|memmove|mktemp|printf|qsort|rewind|scanf|setbuf|sscanf|strcatbuff|strerror|strtok|swprintf|swscanf|tmpnam|vfprintf|vfscanf|vfwscanf|vprintf|vscanf|vsnprintf|vsprintf|vsscanf|vswprintf|vswscanf|vwprintf|vwscanf|wcrtomb|wcrtombs|wcscat|wcscpy|wcslen|wcsncat|wcsncpy|wcsrtombs|wcstok|wctomb|wmemcpy|wmemmove|wnsprintf|wprintf|wscanf|wsprintf|wvnsprintf|wvsprintf)\\b",
         "type": "regex",
         "modifiers": null
       }
@@ -46,7 +46,7 @@
     "severity": "important",
     "patterns": [
       {
-        "pattern": "\\bstrcpy\\s*\\(([^,]+),([^,\\)]+)\\)",
+        "pattern": "\\bstrcpy\\s*\\(([^,]+),([^,]+)\\)",
         "type": "regex",
         "modifiers": null
       }
@@ -55,13 +55,13 @@
       {
         "type": "regex-substitute",
         "name": "Change to strcpy_s (Recommended for VC++)",
-        "search": "\\bstrcpy\\s*\\(([^,]+),([^,\\)]+)\\)",
+        "search": "\\bstrcpy\\s*\\(([^,]+),([^,]+)\\)",
         "replace": "strcpy_s($1, <size of $1>, $2)"
       },
       {
         "type": "regex-substitute",
         "name": "Change to strlcpy",
-        "search": "\\bstrcpy\\s*\\(([^,]+),([^,\\)]+)\\)",
+        "search": "\\bstrcpy\\s*\\(([^,]+),([^,]+)\\)",
         "replace": "strlcpy($1, $2, <size of $1>)"
       }
     ]
@@ -87,7 +87,7 @@
     "severity": "important",
     "patterns": [
       {
-        "pattern": "\\bstrncpy\\s*\\(([^,]+),([^,]+),([^,\\)]+)\\)",
+        "pattern": "\\bstrncpy\\s*\\(([^,]+),([^,]+),([^,]+)\\)+",
         "type": "regex",
         "modifiers": null
       }
@@ -96,13 +96,13 @@
       {
         "type": "regex-substitute",
         "name": "Change to strcpy_s (Recommended for VC++)",
-        "search": "\\bstrncpy\\s*\\(([^,]+),([^,]+),([^,\\)]+)\\)",
+        "search": "\\bstrncpy\\s*\\(([^,]+),([^,]+),([^,]+)\\)+",
         "replace": "strcpy_s($1, $3, $2)"
       },
       {
         "type": "regex-substitute",
         "name": "Change to strlcpy",
-        "search": "\\bstrncpy\\s*\\(([^,]+),([^,]+),([^,\\)]+)\\)",
+        "search": "\\bstrncpy\\s*\\(([^,]+),([^,]+),([^,]+)\\)+",
         "replace": "strlcpy($1, $2, $3)"
       }
     ]
@@ -128,7 +128,7 @@
     "severity": "important",
     "patterns": [
       {
-        "pattern": "\\bstrcat\\s*\\(([^,]+),([^,\\)]+)\\)",
+        "pattern": "\\bstrcat\\s*\\(([^,]+),([^,]+)\\)",
         "type": "regex",
         "modifiers": null
       }
@@ -137,13 +137,13 @@
       {
         "type": "regex-substitute",
         "name": "Change to strcat_s (Recommended for VC++)",
-        "search": "\\bstrcat\\s*\\(([^,]+),([^,\\)]+)\\)",
+        "search": "\\bstrcat\\s*\\(([^,]+),([^,]+)\\)",
         "replace": "strcat_s($1, <size of $1>, $2)"
       },
       {
         "type": "regex-substitute",
         "name": "Change to strlcat",
-        "search": "\\bstrcat\\s*\\(([^,]+),([^,\\)]+)\\)",
+        "search": "\\bstrcat\\s*\\(([^,]+),([^,]+)\\)",
         "replace": "strlcat($1, $2, <size of $1>)"
       }
     ]
@@ -169,7 +169,7 @@
     "severity": "important",
     "patterns": [
       {
-        "pattern": "\\bstrncat\\s*\\(([^,]+),([^,]+),([^,\\)]+)\\)",
+        "pattern": "\\bstrncat\\s*\\(([^,]+),([^,]+),([^,]+)\\)+",
         "type": "regex",
         "modifiers": null
       }
@@ -178,13 +178,13 @@
       {
         "type": "regex-substitute",
         "name": "Change to strcat_s (Recommended for VC++)",
-        "search": "\\bstrncat\\s*\\(([^,]+),([^,]+),([^,\\)]+)\\)",
+        "search": "\\bstrncat\\s*\\(([^,]+),([^,]+),([^,]+)\\)+",
         "replace": "strcat_s($1, $3, $2)"
       },
       {
         "type": "regex-substitute",
         "name": "Change to strlcat",
-        "search": "\\bstrncat\\s*\\(([^,]+),([^,]+),([^,\\)]+)\\)",
+        "search": "\\bstrncat\\s*\\(([^,]+),([^,]+),([^,]+)\\)+",
         "replace": "strlcat($1, $2, $3)"
       }
     ]
@@ -319,7 +319,7 @@
     "overrides": null,
     "name": "Problematic C function detected (memcpy)",
     "tags": [
-      "API.DangerousAPI.BannedFunction"
+      "API.DangerousAPI.ProblematicFunction"
     ],
     "applies_to": [
       "c",
@@ -348,13 +348,56 @@
   },
   {
     "disabled": false,
+    "id": "DS140021",
+    "overrides": [
+      "DS154189"
+    ],
+    "name": "Problematic C function detected (strlen)",
+    "tags": [
+      "API.DangerousAPI.ProblematicFunction"
+    ],
+    "applies_to": [
+      "c",
+      "cpp",
+      "objective-c"
+    ],
+    "description": "If a string is missing a null terminator, strlen will read past the end of the buffer",
+    "replacement": "In instances where you know the maximum size of a string's buffer, use strlen_s or strnlen to prevent over-reading",
+    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS140021.md",
+    "severity": "best-practice",
+    "patterns": [
+      {
+        "pattern": "\\bstrlen\\s*\\(([^,\\)]+)\\)",
+        "type": "regex",
+        "modifiers": null
+      }
+    ],
+    "fix_it": [
+      {
+        "type": "regex-substitute",
+        "name": "Change to strlen_s (Recommended for VC++)",
+        "search": "\\bstrlen\\s*\\(([^,\\)]+)\\)",
+        "replace": "strlen_s($1, <size of $1>)"
+      },
+      {
+        "type": "regex-substitute",
+        "name": "Change to strnlen",
+        "search": "\\bstrlen\\s*\\(([^,\\)]+)\\)",
+        "replace": "strnlen($1, <size of $1>)"
+      }
+    ]
+  },
+  {
+    "disabled": false,
     "id": "DS224000",
     "overrides": null,
     "name": "Dangerous T-SQL Command",
     "tags": [
       "API.T-SQL.Dangerous"
     ],
-    "applies_to": [],
+    "applies_to": [
+      "sql"
+    ],
     "description": "These stored procedures provide access to system resources and should only be used with trusted data.",
     "replacement": "",
     "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS224000.md",
@@ -391,6 +434,35 @@
       }
     ],
     "fix_it": []
+  },
+  {
+    "disabled": false,
+    "id": "DS137138",
+    "overrides": null,
+    "name": "Insecure URL",
+    "tags": [
+      "ThreatModel.Integration.HTTP"
+    ],
+    "applies_to": [],
+    "description": "An HTTP-based URL without TLS was detected.",
+    "replacement": "Update to an HTTPS-based URL if possible.",
+    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS137138.md",
+    "severity": "moderate",
+    "patterns": [
+      {
+        "pattern": "http:",
+        "type": "regex",
+        "modifiers": null
+      }
+    ],
+    "fix_it": [
+      {
+        "type": "regex-substitute",
+        "name": "Change to HTTPS ",
+        "search": "http:",
+        "replace": "https:"
+      }
+    ]
   },
   {
     "disabled": false,
@@ -1198,6 +1270,45 @@
   },
   {
     "disabled": false,
+    "id": "DS128420",
+    "overrides": [
+      "DS126858"
+    ],
+    "name": "Weak/Broken Hash Algorithm",
+    "tags": [
+      "Cryptography.HashAlgorithm.BrokenOrWeak"
+    ],
+    "applies_to": [
+      "php"
+    ],
+    "description": "A weak or broken hash algorithm was detected.",
+    "replacement": "When using hash(), use sha256 or sha512 as the algorithms instead",
+    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS128420.md",
+    "severity": "critical",
+    "patterns": [
+      {
+        "pattern": "hash\\s*\\(\\s*[\\'\\\"](md2|md4|md5|sha1|sha224|ripemd128|ripemd160|ripemd256|ripemd320)[\\'\\\"](.*)\\)\\s*;",
+        "type": "regex",
+        "modifiers": null
+      }
+    ],
+    "fix_it": [
+      {
+        "type": "regex-substitute",
+        "name": "Change to SHA-256",
+        "search": "hash\\s*\\(\\s*[\\'\\\"](md2|md4|md5|sha1|sha224|ripemd128|ripemd160|ripemd256|ripemd320)[\\'\\\"](.*)\\)\\s*;",
+        "replace": "hash('sha256'$2);"
+      },
+      {
+        "type": "regex-substitute",
+        "name": "Change to SHA-512",
+        "search": "hash\\s*\\(\\s*[\\'\\\"](md2|md4|md5|sha1|sha224|ripemd128|ripemd160|ripemd256|ripemd320)[\\'\\\"](.*)\\)\\s*;",
+        "replace": "hash('sha512'$2);"
+      }
+    ]
+  },
+  {
+    "disabled": false,
     "id": "DS108647",
     "overrides": null,
     "name": "Do not use broken/weak cryptographic hash algorithms",
@@ -1948,6 +2059,49 @@
         "name": "Change to inherit from Controller",
         "search": "(class [^\\s]+Controller)(([\\s{]*$)|(\\s*:\\s*(?!.*?(Controller)).*))",
         "replace": "$1 : Controller"
+      }
+    ]
+  },
+  {
+    "disabled": false,
+    "id": "DS144886",
+    "overrides": null,
+    "name": "$_REQUEST should be avoided",
+    "tags": [
+      "Implementation.PHP"
+    ],
+    "applies_to": [
+      "php"
+    ],
+    "description": "$_REQUEST combines POST, GET, and cookie values in one array, making it easy for an attacker to modify a POST or cookie value by instead putting it in a GET and sending the URL to the victim",
+    "replacement": "Use $_POST, $_GET, $_COOKIE to scope to the expected delivery method for a value ",
+    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS144886.md",
+    "severity": "moderate",
+    "patterns": [
+      {
+        "pattern": "\\$_REQUEST",
+        "type": "regex",
+        "modifiers": null
+      }
+    ],
+    "fix_it": [
+      {
+        "type": "regex-substitute",
+        "name": "Change to $_GET",
+        "search": "\\$_REQUEST",
+        "replace": "$$_GET"
+      },
+      {
+        "type": "regex-substitute",
+        "name": "Change to $_POST",
+        "search": "\\$_REQUEST",
+        "replace": "$$_POST"
+      },
+      {
+        "type": "regex-substitute",
+        "name": "Change to $_COOKIE",
+        "search": "\\$_REQUEST",
+        "replace": "$$_COOKIE"
       }
     ]
   },
