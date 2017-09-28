@@ -149,7 +149,7 @@
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.DevSkim, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.DevSkim.1.0.3\lib\net45\Microsoft.DevSkim.dll</HintPath>
+      <HintPath>..\packages\Microsoft.DevSkim.1.0.5\lib\net45\Microsoft.DevSkim.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.CommandBars, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>

@@ -75,8 +75,8 @@ namespace Microsoft.DevSkim.VSExtension.Tests
             DateTime expirationDate = DateTime.Now.AddDays(5);
 
             SuppressionEx sup = new SuppressionEx(string.Format(testString, expirationDate), "csharp");
-            Assert.IsTrue(sup.IsIssueSuppressed("DS126858"), "Is suppressed DS126858 should be True");
-            Assert.IsTrue(sup.IsIssueSuppressed("DS168931"), "Is suppressed DS168931 should be True");
+            Assert.IsNotNull(sup.GetSuppressedIssue("DS126858"), "Is suppressed DS126858 should be True");
+            Assert.IsNotNull(sup.GetSuppressedIssue("DS168931"), "Is suppressed DS168931 should be True");
 
             // Suppress multiple
             string suppressedString = sup.SuppressIssue("DS196098");
@@ -104,8 +104,8 @@ namespace Microsoft.DevSkim.VSExtension.Tests
         {
             string testString = "MD5 hash = new MD5CryptoServiceProvider(); //DevSkim: ignore DS126858,DS168931 until 1980-07-15";
             SuppressionEx sup = new SuppressionEx(testString, "csharp");
-            Assert.IsFalse(sup.IsIssueSuppressed("DS126858"), "Is suppressed DS126858 should be True");
-            Assert.IsFalse(sup.IsIssueSuppressed("DS168931"), "Is suppressed DS168931 should be True");
+            Assert.IsNotNull(sup.GetSuppressedIssue("DS126858"), "Is suppressed DS126858 should be True");
+            Assert.IsNotNull(sup.GetSuppressedIssue("DS168931"), "Is suppressed DS168931 should be True");
 
             // Suppress multiple
             string suppressedString = sup.SuppressIssue("DS196098");

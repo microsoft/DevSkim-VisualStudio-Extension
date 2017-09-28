@@ -216,7 +216,7 @@ namespace Microsoft.DevSkim.VSExtension
                     Issue[] issues = SkimShim.Analyze(text, line.Snapshot.ContentType.TypeName, this.FilePath);
                     foreach(Issue issue in issues)
                     {
-                        if (issue.Location != null && issue.Location.Line == line.LineNumber + 1)
+                        if (issue.Location.Line == line.LineNumber + 1)
                         {
                             int errorStart = issue.Location.Column-1;
                             int errorLength = issue.Boundary.Length;

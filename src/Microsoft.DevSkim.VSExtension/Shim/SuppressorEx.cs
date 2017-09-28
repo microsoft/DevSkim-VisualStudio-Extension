@@ -19,20 +19,11 @@ namespace Microsoft.DevSkim.VSExtension
         {            
             _text = text;
             _language = language;
-            _issues.AddRange(base.GetIssues());
-
-            ParseLine();
-        }
-
-        private void ParseLine()
-        {
-            string pattern = @"\s*" + KeywordPrefix + @"\s+" + KeywordIgnore + @"\s([a-zA-Z\d,:]+)(\s+" + KeywordUntil + @"\s\d{4}-\d{2}-\d{2}|)";
-            Regex reg = new Regex(pattern);
-            Match match = reg.Match(_text);
-            if (match.Success)
+            foreach (SuppressedIssue issue in base.GetIssues())
             {
-                IssuesIndex = match.Groups[1].Index;
+                _issues.Add(issue.ID);
             }
+            //ParseLine();
         }
 
         /// <summary>
@@ -124,11 +115,6 @@ namespace Microsoft.DevSkim.VSExtension
 
             return result;
         }
-
-        /// <summary>
-        /// Starting index of issues list
-        /// </summary>
-        public int IssuesIndex { get; set; } = -1;
    
         private List<string> _issues = new List<string>();
         private string _language;
