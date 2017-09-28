@@ -42,7 +42,7 @@ namespace Microsoft.DevSkim.VSExtension
         public static bool HasMultipleProblems(string text, string contenttype)
         {                        
             var list = Analyze(text, contenttype, string.Empty)
-                      .GroupBy(x => x.Issue.Rule.Id)
+                      .GroupBy(x => x.Rule.Id)
                       .Select(x => x.First())
                       .ToList();
 
@@ -55,38 +55,9 @@ namespace Microsoft.DevSkim.VSExtension
         /// <param name="text">line of code</param>
         /// <param name="contenttype">VS Content Type</param>
         /// <returns>List of actionable and non-actionable issues</returns>
-        public static Problem[] Analyze(string text, string contentType, string fileName)
-        {            
-            List<Problem> results = new List<Problem>();
-            Issue[] issues = _instance.processor.Analyze(text, _instance.GetLanguageList(contentType, fileName));
-
-            // Add matches for errors
-            foreach (Issue issue in issues)
-                results.Add(new Problem() { Actionable = true, Issue = issue});
-
-            // Get list of IDs on the ignore list
-            SuppressionEx supp = new SuppressionEx(text, contentType);
-            string[] suppissues = supp.GetIssues();
-            if (suppissues != null && suppissues.Count() > 0)
-            {
-                int index = supp.IssuesIndex;
-                foreach (string id in suppissues)
-                {
-                    Issue issue = new Issue()
-                    {
-                        Index = index,
-                        Length = id.Length,
-                        Rule = _instance.ruleset.FirstOrDefault(x => x.Id == id)
-                    };
-
-                    if (issue.Rule != null)
-                        results.Add(new Problem() { Actionable = false, Issue = issue });
-
-                    index += id.Length + 1;
-                }
-            }
-
-            return results.ToArray();
+        public static Issue[] Analyze(string text, string contentType, string fileName)
+        {                        
+            return _instance.processor.Analyze(text, _instance.GetLanguageList(contentType, fileName));
         }    
 
         #endregion

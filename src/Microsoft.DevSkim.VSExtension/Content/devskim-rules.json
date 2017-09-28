@@ -1,2164 +1,1414 @@
 [
   {
-    "disabled": false,
-    "id": "DS154189",
-    "overrides": null,
-    "name": "Banned C function detected",
-    "tags": [
-      "API.DangerousAPI.BannedFunction"
-    ],
-    "applies_to": [
-      "c",
-      "cpp",
-      "objective-c"
-    ],
-    "description": "These functions are historically error-prone and have been associated with a significant number of vulnerabilities. Most of these functions have safer alternatives, such as replacing 'strcpy' with 'strlcpy' or 'strcpy_s'.",
-    "replacement": "",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS154189.md",
-    "severity": "moderate",
-    "patterns": [
-      {
-        "pattern": "\\b(sprintf|_getts|_getws|_snprintf|_sntprintf|_snwprintf|_stprintf|_tcsat|_tcscpy|_tcslen|_tcsncpy|_vsnprintf|_vsntprintf|_vsnwprintf|_vstprintf|alloca|asctime|atof|atoi|atoll|bsearch|ctime|fopen|fprintf|freopen|fscanf|fwprintf|fwscanf|getenv|getwd|gmtime|localtime|lstrcat|lstrcpy|mbsrtowcs|mbstowcs|memmove|mktemp|printf|qsort|rewind|scanf|setbuf|sscanf|strcatbuff|strerror|strtok|swprintf|swscanf|tmpnam|vfprintf|vfscanf|vfwscanf|vprintf|vscanf|vsnprintf|vsprintf|vsscanf|vswprintf|vswscanf|vwprintf|vwscanf|wcrtomb|wcrtombs|wcscat|wcscpy|wcslen|wcsncat|wcsncpy|wcsrtombs|wcstok|wctomb|wmemcpy|wmemmove|wnsprintf|wprintf|wscanf|wsprintf|wvnsprintf|wvsprintf)\\b",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": []
-  },
-  {
-    "disabled": false,
-    "id": "DS185832",
-    "overrides": [
-      "DS154189"
-    ],
-    "name": "Banned C function detected (strcpy)",
-    "tags": [
-      "API.DangerousAPI.BannedFunction"
-    ],
-    "applies_to": [
-      "c",
-      "cpp",
-      "objective-c"
-    ],
-    "description": "strcpy is frequently dangerous, as it will cause a buffer overflow if the source is larger than the destination.",
-    "replacement": "Use strcpy_s or strlcpy if possible. If no safe function is viable, strcpy/strncpy should be proceeded by conditional checks to verify tha that the source string will fit in the destination with a null termnator.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS185832.md",
-    "severity": "important",
-    "patterns": [
-      {
-        "pattern": "\\bstrcpy\\s*\\(([^,]+),([^,]+)\\)",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": [
-      {
-        "type": "regex-substitute",
-        "name": "Change to strcpy_s (Recommended for VC++)",
-        "search": "\\bstrcpy\\s*\\(([^,]+),([^,]+)\\)",
-        "replace": "strcpy_s($1, <size of $1>, $2)"
-      },
-      {
-        "type": "regex-substitute",
-        "name": "Change to strlcpy",
-        "search": "\\bstrcpy\\s*\\(([^,]+),([^,]+)\\)",
-        "replace": "strlcpy($1, $2, <size of $1>)"
-      }
-    ]
-  },
-  {
-    "disabled": false,
-    "id": "DS111237",
-    "overrides": [
-      "DS154189"
-    ],
-    "name": "Banned C function detected (strncpy)",
-    "tags": [
-      "API.DangerousAPI.BannedFunction"
-    ],
-    "applies_to": [
-      "c",
-      "cpp",
-      "objective-c"
-    ],
-    "description": "strncpy is dangerous, as if the source contains 'n' or more characters, it will not null terminate the destination.",
-    "replacement": "Use strcpy_s or strlcpy if possible. If no safe function is viable, strcpy/strncpy should be proceeded by conditional checks to verify tha that the source string will fit in the destination with a null termnator.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS111237.md",
-    "severity": "important",
-    "patterns": [
-      {
-        "pattern": "\\bstrncpy\\s*\\(([^,]+),([^,]+),([^,]+)\\)+",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": [
-      {
-        "type": "regex-substitute",
-        "name": "Change to strcpy_s (Recommended for VC++)",
-        "search": "\\bstrncpy\\s*\\(([^,]+),([^,]+),([^,]+)\\)+",
-        "replace": "strcpy_s($1, $3, $2)"
-      },
-      {
-        "type": "regex-substitute",
-        "name": "Change to strlcpy",
-        "search": "\\bstrncpy\\s*\\(([^,]+),([^,]+),([^,]+)\\)+",
-        "replace": "strlcpy($1, $2, $3)"
-      }
-    ]
-  },
-  {
-    "disabled": false,
-    "id": "DS141863",
-    "overrides": [
-      "DS154189"
-    ],
-    "name": "Banned C function detected (strcat)",
-    "tags": [
-      "API.DangerousAPI.BannedFunction"
-    ],
-    "applies_to": [
-      "c",
-      "cpp",
-      "objective-c"
-    ],
-    "description": "If the combination of strings is larger than the destination buffer, strcat will cbuffer overflow the destination buffer",
-    "replacement": "Use strcat_s or strlcat if possible. strncat's size parameter excludes the null terminator, which leads to frequent mistakes",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS141863.md",
-    "severity": "important",
-    "patterns": [
-      {
-        "pattern": "\\bstrcat\\s*\\(([^,]+),([^,]+)\\)",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": [
-      {
-        "type": "regex-substitute",
-        "name": "Change to strcat_s (Recommended for VC++)",
-        "search": "\\bstrcat\\s*\\(([^,]+),([^,]+)\\)",
-        "replace": "strcat_s($1, <size of $1>, $2)"
-      },
-      {
-        "type": "regex-substitute",
-        "name": "Change to strlcat",
-        "search": "\\bstrcat\\s*\\(([^,]+),([^,]+)\\)",
-        "replace": "strlcat($1, $2, <size of $1>)"
-      }
-    ]
-  },
-  {
-    "disabled": false,
-    "id": "DS108330",
-    "overrides": [
-      "DS154189"
-    ],
-    "name": "Banned C function detected (strncat)",
-    "tags": [
-      "API.DangerousAPI.BannedFunction"
-    ],
-    "applies_to": [
-      "c",
-      "cpp",
-      "objective-c"
-    ],
-    "description": "strncat adds the null terminator at character 'n + 1', rather than at the nth character. this frequently leads to the null terminator being added in the memory adjacent to the destination buffer, rather than in the destination buffer.",
-    "replacement": "Use strcat_s or strlcat if possible. ",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS108330.md",
-    "severity": "important",
-    "patterns": [
-      {
-        "pattern": "\\bstrncat\\s*\\(([^,]+),([^,]+),([^,]+)\\)+",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": [
-      {
-        "type": "regex-substitute",
-        "name": "Change to strcat_s (Recommended for VC++)",
-        "search": "\\bstrncat\\s*\\(([^,]+),([^,]+),([^,]+)\\)+",
-        "replace": "strcat_s($1, $3, $2)"
-      },
-      {
-        "type": "regex-substitute",
-        "name": "Change to strlcat",
-        "search": "\\bstrncat\\s*\\(([^,]+),([^,]+),([^,]+)\\)+",
-        "replace": "strlcat($1, $2, $3)"
-      }
-    ]
-  },
-  {
-    "disabled": false,
-    "id": "DS181021",
-    "overrides": [
-      "DS154189"
-    ],
-    "name": "Banned C function detected (gets)",
-    "tags": [
-      "API.DangerousAPI.BannedFunction"
-    ],
-    "applies_to": [
-      "c",
-      "cpp",
-      "objective-c"
-    ],
-    "description": "gets will read in as many bytes as are provided, regardless of the size of buffer recieving the bytes.  This allows for conditions that cause a buffer overlow in the destination buffer.",
-    "replacement": "Use gets_s or fgets if possible. fgets has different behavior from gets (may include newline for example), so care should be taken if it is used.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS181021.md",
-    "severity": "important",
-    "patterns": [
-      {
-        "pattern": "\\bgets\\s*\\(([^,\\)]+)\\)",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": [
-      {
-        "type": "regex-substitute",
-        "name": "Change to gets_s (Recommended for VC++)",
-        "search": "\\bgets\\s*\\(([^,\\)]+)\\)",
-        "replace": "gets_s($1, <size of $1>)"
-      },
-      {
-        "type": "regex-substitute",
-        "name": "Change to fgets",
-        "search": "\\bgets\\s*\\(([^,\\)]+)\\)",
-        "replace": "fgets($1, <size of $1>, stdin)"
-      }
-    ]
-  },
-  {
-    "disabled": false,
-    "id": "DS179924",
-    "overrides": null,
-    "name": "Do not copy a FILE object (CERT FIO38-C)",
-    "tags": [
-      "CERT.FIO38-C",
-      "C.DangerousFunctionCall"
-    ],
-    "applies_to": [
-      "cpp",
-      "c"
-    ],
-    "description": "The CERT Secure Coding Standard recommends that FILE objects not be copied.",
-    "replacement": "Copy a pointer to the FILE object instead.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS179924.md",
-    "severity": "important",
-    "patterns": [
-      {
-        "pattern": "FILE [a-z0-9_][^=]*=\\s*\\*",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": []
-  },
-  {
-    "disabled": false,
-    "id": "DS181731",
-    "overrides": null,
-    "name": "Don't pass user input to this function",
-    "tags": [
-      "PHP.Injection"
-    ],
-    "applies_to": [
-      "php"
-    ],
-    "description": "Don't pass user input to this function.",
-    "replacement": "Validate this data before passing it to the function.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS181731.md",
-    "severity": "critical",
-    "patterns": [
-      {
-        "pattern": "(include|require|include_once|require_once|passthru)\\s*\\(.*\\$\\_(GET|POST|REQUEST|COOKIES|FILES)",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": []
-  },
-  {
-    "disabled": false,
-    "id": "DS161085",
-    "overrides": null,
-    "name": "Problematic C function detected (malloc)",
-    "tags": [
-      "API.DangerousAPI.ProblematicFunction"
-    ],
-    "applies_to": [
-      "c",
-      "cpp",
-      "objective-c"
-    ],
-    "description": "If the value provided to malloc is the result of unsafe integer math, it can result in an exploitable condition. ",
-    "replacement": "calloc handles the most common integer math in memory allocation (# of elements * their size) with error handling to prevent overflows in most implementations, and zeros out memory",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS161085.md",
-    "severity": "best-practice",
-    "patterns": [
-      {
-        "pattern": "\\bmalloc\\s*\\(([^,\\)]+)\\)",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": [
-      {
-        "type": "regex-substitute",
-        "name": "Change to calloc ",
-        "search": "\\bmalloc\\s*\\(([^,\\)]+)\\)",
-        "replace": "calloc(<number of elements>, <size of each element>)"
-      }
-    ]
-  },
-  {
-    "disabled": false,
-    "id": "DS121708",
-    "overrides": null,
-    "name": "Problematic C function detected (memcpy)",
-    "tags": [
-      "API.DangerousAPI.ProblematicFunction"
-    ],
-    "applies_to": [
-      "c",
-      "cpp",
-      "objective-c"
-    ],
-    "description": "There are a number of conditions in which memcpy can introduce a vulnerability (mismatched buffer sizes, null pointers, etc.). More secure alternitives perform additional validation of the source and destination buffer",
-    "replacement": "Use memcpy_s if possible.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS121708.md",
-    "severity": "best-practice",
-    "patterns": [
-      {
-        "pattern": "\\bmemcpy\\s*\\(([^,]+),([^,]+),([^,\\)]+)\\)",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": [
-      {
-        "type": "regex-substitute",
-        "name": "Change to memcpy_s (Recommended for VC++)",
-        "search": "\\bmemcpy\\s*\\(([^,]+),([^,]+),([^,\\)]+)\\)",
-        "replace": "memcpy_s($1, <size of $1>, $2, $3)"
-      }
-    ]
-  },
-  {
-    "disabled": false,
-    "id": "DS140021",
-    "overrides": [
-      "DS154189"
-    ],
-    "name": "Problematic C function detected (strlen)",
-    "tags": [
-      "API.DangerousAPI.ProblematicFunction"
-    ],
-    "applies_to": [
-      "c",
-      "cpp",
-      "objective-c"
-    ],
-    "description": "If a string is missing a null terminator, strlen will read past the end of the buffer",
-    "replacement": "In instances where you know the maximum size of a string's buffer, use strlen_s or strnlen to prevent over-reading",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS140021.md",
-    "severity": "best-practice",
-    "patterns": [
-      {
-        "pattern": "\\bstrlen\\s*\\(([^,\\)]+)\\)",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": [
-      {
-        "type": "regex-substitute",
-        "name": "Change to strlen_s (Recommended for VC++)",
-        "search": "\\bstrlen\\s*\\(([^,\\)]+)\\)",
-        "replace": "strlen_s($1, <size of $1>)"
-      },
-      {
-        "type": "regex-substitute",
-        "name": "Change to strnlen",
-        "search": "\\bstrlen\\s*\\(([^,\\)]+)\\)",
-        "replace": "strnlen($1, <size of $1>)"
-      }
-    ]
-  },
-  {
-    "disabled": false,
-    "id": "DS224000",
-    "overrides": null,
-    "name": "Dangerous T-SQL Command",
-    "tags": [
-      "API.T-SQL.Dangerous"
-    ],
-    "applies_to": [
-      "sql"
-    ],
-    "description": "These stored procedures provide access to system resources and should only be used with trusted data.",
-    "replacement": "",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS224000.md",
-    "severity": "important",
-    "patterns": [
-      {
-        "pattern": "\\b(xp_cmdshell|xp_regread|xp_instance_regread|xp_regwrite|sp_makewebtask|xp_sendmail|sp_configure|sp_executesql|dbcc writepage)\\b",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": []
-  },
-  {
-    "disabled": false,
-    "id": "DS137038",
-    "overrides": null,
-    "name": "Notice: Outbound HTTP Connection",
-    "tags": [
-      "ThreatModel.Integration.HTTP"
-    ],
-    "applies_to": [
-      "ruby"
-    ],
-    "description": "Inbound HTTP",
-    "replacement": "",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS137038.md",
-    "severity": "manual-review",
-    "patterns": [
-      {
-        "pattern": "\\bNet::HTTP\\b",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": []
-  },
-  {
-    "disabled": false,
-    "id": "DS137138",
-    "overrides": null,
-    "name": "Insecure URL",
-    "tags": [
-      "ThreatModel.Integration.HTTP"
-    ],
-    "applies_to": [],
-    "description": "An HTTP-based URL without TLS was detected.",
-    "replacement": "Update to an HTTPS-based URL if possible.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS137138.md",
-    "severity": "moderate",
-    "patterns": [
-      {
-        "pattern": "http:",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": [
-      {
-        "type": "regex-substitute",
-        "name": "Change to HTTPS ",
-        "search": "http:",
-        "replace": "https:"
-      }
-    ]
-  },
-  {
-    "disabled": false,
-    "id": "DS165746",
-    "overrides": null,
-    "name": "Do not execute user-provided JavaScript",
-    "tags": [
-      "Design.Mobile.iOS.WebView.DynamicJavaScript"
-    ],
-    "applies_to": [
-      "objective-c"
-    ],
-    "description": "This line of code shows the dynamic evaluation of JavaScript, sourced from a string. It's important that this string not contain unsanitized user-supplied data, as it could be a vector for a cross-site scripting (XSS) attack.",
-    "replacement": "",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS165746.md",
-    "severity": "important",
-    "patterns": [
-      {
-        "pattern": "\\bstringByEvaluatingJavaScriptFromString\\b",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": []
-  },
-  {
-    "disabled": false,
-    "id": "DS113286",
-    "overrides": null,
-    "name": "Do not include user-input directoy in format strings",
-    "tags": [
-      "ControlFlow.Injection.FormatString",
-      "cert:FIO30-C"
-    ],
-    "applies_to": [
-      "objective-c"
-    ],
-    "description": "Do not create NSString objects using a user-provided format string, as this could lead to a security vulnerability. https://www.securecoding.cert.org/confluence/display/c/FIO30-C.+Exclude+user+input+from+format+strings",
-    "replacement": "",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS113286.md",
-    "severity": "important",
-    "patterns": [
-      {
-        "pattern": "\\[NSString stringWithFormat:\\s*([^@\\\"\\]]+\\])",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": [
-      {
-        "type": "regex-substitute",
-        "name": "Use a predefined format string",
-        "search": "\\[NSString stringWithFormat:\\s*([^@\\\"\\]]+\\])",
-        "replace": "[NSString stringWithFormat:@\"%@\", $1"
-      }
-    ]
-  },
-  {
-    "disabled": false,
-    "id": "DS113853",
-    "overrides": null,
-    "name": "Do not set a custom execution policy.",
-    "tags": [
-      "ControlFlow.Permission.Evalation"
-    ],
-    "applies_to": [
-      "powershell"
-    ],
-    "description": "The Set-ExecutionPolicy cmdlet has been used to dynamically change the permissions available to PowerShell.",
-    "replacement": "Avoid elevating privileges if possible.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS113853.md",
-    "severity": "moderate",
-    "patterns": [
-      {
-        "pattern": "\\bSet-ExecutionPolicy\\b",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": []
-  },
-  {
-    "disabled": false,
-    "id": "DS104456",
-    "overrides": null,
-    "name": "Use of restricted functions.",
-    "tags": [
-      "Implementation.Scripting.PowerShell.DangeousFunction"
-    ],
-    "applies_to": [
-      "powershell"
-    ],
-    "description": "Use of restricted functions.",
-    "replacement": "",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS104456.md",
-    "severity": "important",
-    "patterns": [
-      {
-        "pattern": "\\bGetDelegateForFunctionPointer\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bSystem.Runtime.InteropServices.Marshal\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bWriteByte\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bMicrosoft.Win32.UnsafeNativeMethods\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bPtrToStructure\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bStructureToPtr\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\b(NtCreateThreadEx|CreateRemoteThread)\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bInvoke\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bVirtualProtect\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\biex\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\b&\"\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\b& $\\b",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": []
-  },
-  {
-    "disabled": false,
-    "id": "DS114352",
-    "overrides": null,
-    "name": "Encryption Marked 'Optional'",
-    "tags": [
-      "Cryptography.Optional"
-    ],
-    "applies_to": null,
-    "description": "Optional encryption or integrity checking can be dangerous.",
-    "replacement": "As a best practice, always enable strong encryption and integrity checking.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS114352.md",
-    "severity": "important",
-    "patterns": [
-      {
-        "pattern": "Integrity.*optional",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "Encryption.*optional",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": []
-  },
-  {
-    "disabled": false,
-    "id": "DS181865",
-    "overrides": null,
-    "name": "Disabled certificate validation",
-    "tags": [
-      "Cryptography.Certificate.Validation"
-    ],
-    "applies_to": [
-      "objective-c"
-    ],
-    "description": "Extend default certificate validation, but do not disable or override default rules.",
-    "replacement": "Always use a valid certificate, even during testing.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS181865.md",
-    "severity": "critical",
-    "patterns": [
-      {
-        "pattern": "setValidatesSecureCertificate:\\s*NO",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "setAllowsAnyHTTPSCertificate:\\s*YES",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "allowsAnyHTTPSCertificate\\s*=\\s*YES",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "setValidatesSecureCertificate:\\s*NO",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "validatesSecureCertificate\\s*=\\s*NO",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bcontinueWithoutCredentialForAuthenticationChallenge\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "kCFStreamSSL(Level|AllowsExpiredCertificates|AllowsExpiredRoots|AllowsAnyRoot|ValidatesCertificateChain|PeerName)",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bkCFStreamPropertySSLSettings\\b",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": null
-  },
-  {
-    "disabled": false,
-    "id": "DS134411",
-    "overrides": null,
-    "name": "Disabled certificate validation",
-    "tags": [
-      "Cryptography.Certificate.Validation"
-    ],
-    "applies_to": [
-      "csharp"
-    ],
-    "description": "Extend default certificate validation, but do not disable or override default rules.",
-    "replacement": "Always use a valid certificate, even during testing.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS134411.md",
-    "severity": "critical",
-    "patterns": [
-      {
-        "pattern": "\\b.IgnorableServerCertificateErrors.\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\.ServerCertificateValidationCallback\\s*\\+?=\\s*delegate\\s*{\\s*return true;\\s*};",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "ServerCertificateValidationCallback\\s*\\+?=\\s*delegate\\([^\\)]*\\)\\s*{\\s+return[\\s\\(]?true[\\s\\)]?",
-        "type": "regex",
-        "modifiers": [
-          "DOTALL",
-          "MULTILINE",
-          "IGNORECASE"
-        ]
-      },
-      {
-        "pattern": "ServerCertificateValidationCallback\\s*\\+?=\\s*\\([^\\)]*\\)\\s*=>\\s*true",
-        "type": "regex",
-        "modifiers": [
-          "DOTALL",
-          "MULTILINE",
-          "IGNORECASE"
-        ]
-      },
-      {
-        "pattern": "RemoteCertificateValidationCallback\\(delegate\\s*{\\s*return true;\\s*}\\);",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "RemoteCertificateValidationCallback\\(\\s*\\([^\\)]*\\)\\s*=>\\s*{\\s*return true;\\s*}\\s*\\)",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": null
-  },
-  {
-    "disabled": false,
-    "id": "DS176603",
-    "overrides": null,
-    "name": "Disabled certificate validation",
-    "tags": [
-      "Cryptography.Certificate.Validation"
-    ],
-    "applies_to": [
-      "ruby"
-    ],
-    "description": "Extend default certificate validation, but do not disable or override default rules.",
-    "replacement": "Always use a valid certificate, even during testing.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS114352.md",
-    "severity": "critical",
-    "patterns": [
-      {
-        "pattern": "\\bOpenSSL::SSL::VERIFY_NONE\\b",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": []
-  },
-  {
-    "disabled": false,
-    "id": "DS130821",
-    "overrides": null,
-    "name": "Disabled certificate validation",
-    "tags": [
-      "Cryptography.Certificate.Validation"
-    ],
-    "applies_to": [
-      "python"
-    ],
-    "description": "Extend default certificate validation, but do not disable or override default rules.",
-    "replacement": "Always use a valid certificate, even during testing.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS114352.md",
-    "severity": "critical",
-    "patterns": [
-      {
-        "pattern": "requests\\.(get|post|head|patch|delete|options)\\([^\\)]*\\s+verify\\s*=\\s*False\\)",
-        "type": "regex",
-        "modifiers": [
-          "DOTALL",
-          "MULTILINE",
-          "IGNORECASE"
-        ]
-      }
-    ],
-    "fix_it": [
-      {
-        "type": "regex-substitute",
-        "name": "Set verify to True",
-        "search": "False",
-        "replace": "True"
-      }
-    ]
-  },
-  {
-    "disabled": false,
-    "id": "DS130822",
-    "overrides": null,
-    "name": "Disabled certificate validation",
-    "tags": [
-      "Cryptography.Certificate.Validation"
-    ],
-    "applies_to": [
-      "python"
-    ],
-    "description": "Extend default certificate validation, but do not disable or override default rules.",
-    "replacement": "Always use a valid certificate, even during testing.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS130822.md",
-    "severity": "critical",
-    "patterns": [
-      {
-        "pattern": "\\.check_hostname\\s*=\\s*False",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bdisable_ssl_certificate_validation\\s*=\\s*True\\b",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": []
-  },
-  {
-    "disabled": false,
-    "id": "DS159369",
-    "overrides": null,
-    "name": "Disabled certificate validation",
-    "tags": [
-      "Cryptography.Certificate.Validation"
-    ],
-    "applies_to": [
-      "cpp"
-    ],
-    "description": "Extend default certificate validation, but do not disable or override default rules.",
-    "replacement": "Always use a valid certificate, even during testing.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS114352.md",
-    "severity": "critical",
-    "patterns": [
-      {
-        "pattern": "\\bSECURITY_FLAG_IGNORE_CERT_CN_INVALID\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bSECURITY_FLAG_IGNORE_CERT_DATE_INVALID\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bSECURITY_FLAG_IGNORE_REVOCATION\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bSECURITY_FLAG_IGNORE_UNKNOWN_CA\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bSECURITY_FLAG_IGNORE_WRONG_USAGE\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bSECURITY_FLAG_IGNORE_CERT_WRONG_USAGE\\b",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": []
-  },
-  {
-    "disabled": false,
-    "id": "DS101940",
-    "overrides": null,
-    "name": "Disabled certificate validation",
-    "tags": [
-      "Cryptography.Certificate.Validation"
-    ],
-    "applies_to": [
-      ".config"
-    ],
-    "description": "Extend default certificate validation, but do not disable or override default rules.",
-    "replacement": "Always use a valid certificate, even during testing.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS114352.md",
-    "severity": "critical",
-    "patterns": [
-      {
-        "pattern": "\\bcertificateValidationMode=\"None\"\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bcheckCertificateName=\"false\"\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bcheckCertificateRevocationList=\"false\"\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "encryptionPolicy=\"(AllowNoEncryption|NoEncryption)",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": []
-  },
-  {
-    "disabled": false,
-    "id": "DS125134",
-    "overrides": null,
-    "name": "Disabled certificate validation",
-    "tags": [
-      "Cryptography.Certificate.Validation"
-    ],
-    "applies_to": [
-      "javascript"
-    ],
-    "description": "Extend default certificate validation, but do not disable or override default rules.",
-    "replacement": "Always use a valid certificate, even during testing.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS114352.md",
-    "severity": "critical",
-    "patterns": [
-      {
-        "pattern": "NODE_TLS_REJECT_UNAUTHORIZED|rejectUnauthorized",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": []
-  },
-  {
-    "disabled": false,
-    "id": "DS152094",
-    "overrides": null,
-    "name": "Disabled certificate validation",
-    "tags": [
-      "Cryptography.Certificate.Validation"
-    ],
-    "applies_to": [
-      "java"
-    ],
-    "description": "Extend default certificate validation, but do not disable or override default rules.",
-    "replacement": "Always use a valid certificate, even during testing.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS114352.md",
-    "severity": "critical",
-    "patterns": [
-      {
-        "pattern": "(TrustManager|getInsecure|HostnameVerifier|AbstractVerifier|AllowAllHostnameVerifier|BrowserCompatHostnameVerifier|StrictHostnameVerifier|onReceivedSslError|insecuresocketfactory|customhostnameverifier)",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": []
-  },
-  {
-    "disabled": false,
-    "id": "DS126185",
-    "overrides": null,
-    "name": "Disabled certificate validation",
-    "tags": [
-      "Cryptography.Certificate.Validation"
-    ],
-    "applies_to": [
-      "powershell"
-    ],
-    "description": "Extend default certificate validation, but do not disable or override default rules.",
-    "replacement": "Always use a valid certificate, even during testing.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS114352.md",
-    "severity": "critical",
-    "patterns": [
-      {
-        "pattern": "::ServerCertificateValidationCallback\\s*=\\s*{\\s*\\$true\\s*}",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": []
-  },
-  {
-    "disabled": false,
-    "id": "DS175862",
-    "overrides": null,
-    "name": "Do not use the mcrypt module, use OpenSSL instead.",
-    "tags": [
-      "Cryptography.Library.Abandoned"
-    ],
-    "applies_to": [
-      "php"
-    ],
-    "description": "The PHP mcrypt module is based on libmcrypt, which has been abanonded since 2007.",
-    "replacement": "OpenSSL",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS175862.md",
-    "severity": "moderate",
-    "patterns": [
-      {
-        "pattern": "\\bmcrypt\\b",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": []
-  },
-  {
-    "disabled": false,
-    "id": "DS109501",
-    "overrides": [
-      "DS106864"
-    ],
-    "name": "Do not use the 3DES symmetric block cipher.",
-    "tags": [
-      "Cryptography.Symmetric.PotentiallyWeakAlgorithm"
-    ],
-    "applies_to": [
-      "csharp"
-    ],
-    "description": "The 3DES cipher was found, which is only secure if three independent keys are used.",
-    "replacement": "Use AES instead.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS109501.md",
-    "severity": "moderate",
-    "patterns": [
-      {
-        "pattern": "\\bTripleDESCryptoServiceProvider\\b",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": [
-      {
-        "type": "regex-substitute",
-        "name": "Change to AESCryptoServiceProvider",
-        "search": "TripleDESCryptoServiceProvider",
-        "replace": "AESCryptoServiceProvider"
-      }
-    ]
-  },
-  {
-    "disabled": false,
-    "id": "DS106864",
-    "overrides": null,
-    "name": "Do not use the DES symmetric block cipher.",
-    "tags": [
-      "Cryptography.Symmetric.WeakOrBrokenAlgorithm"
-    ],
-    "applies_to": [
-      "csharp"
-    ],
-    "description": "The DES cipher was found, which is widely considered to be broken.",
-    "replacement": "Use AES instead.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS106864.md",
-    "severity": "critical",
-    "patterns": [
-      {
-        "pattern": "\\bDESCryptoServiceProvider\\b",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": [
-      {
-        "type": "regex-substitute",
-        "name": "Change to AESCryptoServiceProvider",
-        "search": "DESCryptoServiceProvider",
-        "replace": "AESCryptoServiceProvider"
-      }
-    ]
-  },
-  {
-    "disabled": false,
-    "id": "DS156431",
-    "overrides": null,
-    "name": "Do not use the RC2 symmetric block cipher.",
-    "tags": [
-      "Cryptography.Symmetric.WeakOrBrokenAlgorithm"
-    ],
-    "applies_to": [
-      "csharp"
-    ],
-    "description": "The RC2 cipher was found, which is considered to be broken.",
-    "replacement": "Use AES instead.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS156431.md",
-    "severity": "critical",
-    "patterns": [
-      {
-        "pattern": "\\bRC2CryptoServiceProvider\\b",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": [
-      {
-        "type": "regex-substitute",
-        "name": "Change to AESCryptoServiceProvider",
-        "search": "RC2CryptoServiceProvider",
-        "replace": "AESCryptoServiceProvider"
-      }
-    ]
-  },
-  {
-    "disabled": false,
-    "id": "DS101155",
-    "overrides": null,
-    "name": "Disabled certificate validation",
-    "tags": [
-      "Cryptography.Certificate.Validation"
-    ],
-    "applies_to": null,
-    "description": "Extend default certificate validation, but do not disable or override default rules.",
-    "replacement": "Always use a valid certificate, even during testing.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS101155.md",
-    "severity": "critical",
-    "patterns": [
-      {
-        "pattern": "\\bencrypt=false\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bencryption=false\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "unencrypted.*password",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "TODO.*crypt",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": null
-  },
-  {
-    "disabled": false,
-    "id": "DS101159",
-    "overrides": null,
-    "name": "Initializing Security Context",
-    "tags": [
-      "Cryptography.SecurityContext.Initialization"
-    ],
-    "applies_to": [
-      "cpp"
-    ],
-    "description": "SecurityContext initialization, look here for cryptography functions.",
-    "replacement": "",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS101159.md",
-    "severity": "manual-review",
-    "patterns": [
-      {
-        "pattern": "\\bInitializeSecurityContext\\b",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": null
-  },
-  {
-    "disabled": false,
-    "id": "DS126858",
-    "overrides": null,
-    "name": "Weak/Broken Hash Algorithm",
-    "tags": [
-      "Cryptography.BannedHashAlgorithm"
-    ],
-    "applies_to": null,
-    "description": "A weak or broken hash algorithm was detected.",
-    "replacement": "Consider switching to use SHA-256 or SHA-512 instead.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS126858.md",
-    "severity": "critical",
-    "patterns": [
-      {
-        "pattern": "(MD2|MD4|MD5|RIPEMD|RIPEMD(128|256|160|320)|(SHA0|SHA-0|SHA1|SHA-1))",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": [
-      {
-        "type": "regex-substitute",
-        "name": "Change to \"SHA256\"",
-        "search": "(MD2|MD4|MD5|RIPEMD|RIPEMD(128|256|160|320)|(SHA0|SHA-0|SHA1|SHA-1))",
-        "replace": "SHA256"
-      },
-      {
-        "type": "regex-substitute",
-        "name": "Change to \"SHA512\"",
-        "search": "(MD2|MD4|MD5|RIPEMD|RIPEMD(128|256|160|320)|(SHA0|SHA-0|SHA1|SHA-1))",
-        "replace": "SHA512"
-      }
-    ]
-  },
-  {
-    "disabled": false,
-    "id": "DS197800",
-    "overrides": [
-      "DS126858"
-    ],
-    "name": "Weak/Broken Hash Algorithm",
-    "tags": [
-      "Cryptography.HashAlgorithm.BrokenOrWeak"
-    ],
-    "applies_to": [
-      "objective-c"
-    ],
-    "description": "A weak or broken hash algorithm was detected.",
-    "replacement": "Use CC_SHA256 or CC_SHA512 instead.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS197800.md",
-    "severity": "critical",
-    "patterns": [
-      {
-        "pattern": "CC_(MD2|MD4|MD5|SHA1)",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": [
-      {
-        "type": "regex-substitute",
-        "name": "Change to SHA-256",
-        "search": "CC_(MD2|MD4|MD5|SHA1)",
-        "replace": "CC_SHA256"
-      },
-      {
-        "type": "regex-substitute",
-        "name": "Change to SHA-512",
-        "search": "CC_(MD2|MD4|MD5|SHA1)",
-        "replace": "CC_SHA512"
-      }
-    ]
-  },
-  {
-    "disabled": false,
-    "id": "DS128420",
-    "overrides": [
-      "DS126858"
-    ],
-    "name": "Weak/Broken Hash Algorithm",
-    "tags": [
-      "Cryptography.HashAlgorithm.BrokenOrWeak"
-    ],
-    "applies_to": [
-      "php"
-    ],
-    "description": "A weak or broken hash algorithm was detected.",
-    "replacement": "When using hash(), use sha256 or sha512 as the algorithms instead",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS128420.md",
-    "severity": "critical",
-    "patterns": [
-      {
-        "pattern": "hash\\s*\\(\\s*[\\'\\\"](md2|md4|md5|sha1|sha224|ripemd128|ripemd160|ripemd256|ripemd320)[\\'\\\"](.*)\\)\\s*;",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": [
-      {
-        "type": "regex-substitute",
-        "name": "Change to SHA-256",
-        "search": "hash\\s*\\(\\s*[\\'\\\"](md2|md4|md5|sha1|sha224|ripemd128|ripemd160|ripemd256|ripemd320)[\\'\\\"](.*)\\)\\s*;",
-        "replace": "hash('sha256'$2);"
-      },
-      {
-        "type": "regex-substitute",
-        "name": "Change to SHA-512",
-        "search": "hash\\s*\\(\\s*[\\'\\\"](md2|md4|md5|sha1|sha224|ripemd128|ripemd160|ripemd256|ripemd320)[\\'\\\"](.*)\\)\\s*;",
-        "replace": "hash('sha512'$2);"
-      }
-    ]
-  },
-  {
-    "disabled": false,
-    "id": "DS108647",
-    "overrides": null,
-    "name": "Do not use broken/weak cryptographic hash algorithms",
-    "tags": [
-      "Cryptography.HashAlgorithm.BrokenOrWeak"
-    ],
-    "applies_to": [
-      "ruby"
-    ],
-    "description": "Avoid using broken or weak hash algorithms.",
-    "replacement": "Use Digest::SHA256 or Digest::SHA512",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS108647.md",
-    "severity": "critical",
-    "patterns": [
-      {
-        "pattern": "Digest::(MD5|RMD160|SHA1)",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": [
-      {
-        "type": "regex-substitute",
-        "name": "Change to SHA-256",
-        "search": "Digest::(MD5|RMD160|SHA1)",
-        "replace": "Digest::SHA256"
-      },
-      {
-        "type": "regex-substitute",
-        "name": "Change to SHA-512",
-        "search": "Digest::(MD5|RMD160|SHA1)",
-        "replace": "Digest::SHA512"
-      }
-    ]
-  },
-  {
-    "disabled": false,
-    "id": "DS196098",
-    "overrides": [
-      "DS126858"
-    ],
-    "name": "Do not use broken/weak cryptographic hash algorithms",
-    "tags": [
-      "Cryptography.HashAlgorithm.BrokenOrWeak"
-    ],
-    "applies_to": [
-      "python"
-    ],
-    "description": "Avoid using broken or weak hash algorithms.",
-    "replacement": "Use hashlib.sha256 instead.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS196098.md",
-    "severity": "critical",
-    "patterns": [
-      {
-        "pattern": "(md5|sha)\\.new\\(",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": [
-      {
-        "type": "regex-substitute",
-        "name": "Change to hashlib.sha256",
-        "search": "(md5|sha)\\.new\\(",
-        "replace": "hashlib.sha256("
-      },
-      {
-        "type": "regex-substitute",
-        "name": "Change to hashlib.sha512",
-        "search": "(md5|sha)\\.new\\(",
-        "replace": "hashlib.sha512("
-      }
-    ]
-  },
-  {
-    "disabled": false,
-    "id": "DS168931",
-    "overrides": [
-      "DS126858"
-    ],
-    "name": "Do not use broken/weak cryptographic hash algorithms",
-    "tags": [
-      "Cryptography.HashAlgorithm.BrokenOrWeak"
-    ],
-    "applies_to": [
-      "csharp"
-    ],
-    "description": "A potentially weak hashing algorithm was used.",
-    "replacement": "Use SHA-256 instead.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS168931.md",
-    "severity": "critical",
-    "patterns": [
-      {
-        "pattern": "MD5CryptoServiceProvider",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": [
-      {
-        "type": "regex-substitute",
-        "name": "Change to SHA-256",
-        "search": "MD5CryptoServiceProvider",
-        "replace": "SHA256CryptoServiceProvider"
-      },
-      {
-        "type": "regex-substitute",
-        "name": "Change to SHA-512",
-        "search": "MD5CryptoServiceProvider",
-        "replace": "SHA512CryptoServiceProvider"
-      }
-    ]
-  },
-  {
-    "disabled": false,
-    "id": "DS197836",
-    "overrides": null,
-    "name": "Do not take the hash of low-entropy content.",
-    "tags": [
-      "Cryptography.HashAlgorithm.InsufficientEntropy"
-    ],
-    "applies_to": null,
-    "description": "Taking a hash of a time value is suspicious, as there is insufficient entropy to protect against brute-force attacks.",
-    "replacement": "",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS197836.md",
-    "severity": "important",
-    "patterns": [
-      {
-        "pattern": "(MD4|MD5|(SHA(1|224|256|384|512))).*Time",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": null
-  },
-  {
-    "disabled": false,
-    "id": "DS188250",
-    "overrides": null,
-    "name": "Missing initialization vector",
-    "tags": [
-      "Cryptography.Symmetric.InitializationVector.Missing"
-    ],
-    "applies_to": [
-      "php"
-    ],
-    "description": "The mcrypt_encrypt function was used without an initialization vector.",
-    "replacement": "Add an initialization vector or consider a different cipher mode",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS188250.md",
-    "severity": "important",
-    "patterns": [
-      {
-        "pattern": "mcrypt_encrypt\\s*\\([^,]+,[^,]+,[^,]+,[^,]+\\);",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": [
-      {
-        "type": "regex-substitute",
-        "name": "Add initialization vector",
-        "search": "(mcrypt_encrypt\\s*\\([^,]+,[^,]+,[^,]+,[^,]+)(\\);)",
-        "replace": "$1, <$iv>$2"
-      }
-    ]
-  },
-  {
-    "disabled": false,
-    "id": "DS128921",
-    "overrides": null,
-    "name": "Hardcoded initialization vector size",
-    "tags": [
-      "Cryptography.Symmetric.InitializationVector.HardcodedSize"
-    ],
-    "applies_to": [
-      "php"
-    ],
-    "description": "An initialization vector was created to a static size, rather than determining it based on the encryption algorithm used.",
-    "replacement": "Use mcrypt_get_iv_size to get the correct IV size based on the cipher and mode.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS128921.md",
-    "severity": "moderate",
-    "patterns": [
-      {
-        "pattern": "mcrypt_create_iv\\s*\\(\\s*\\d.*",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": []
-  },
-  {
-    "disabled": false,
-    "id": "DS144436",
-    "overrides": null,
-    "name": "Do not use outdated SSL/TLS protocols",
-    "tags": [
-      "Cryptography.Protocol.TLS"
-    ],
-    "applies_to": [
-      "csharp"
-    ],
-    "description": "It's usually better to rely on the operating system configuration, rather than hardcoding a specific SecurityProtocolType.",
-    "replacement": "Either leave off or set to SecurityProtocolType.Tls12;",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS144436.md",
-    "severity": "important",
-    "patterns": [
-      {
-        "pattern": "\\bSecurityProtocolType\\.(Ssl3|Tls|Tls11)\\b",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": [
-      {
-        "type": "regex-substitute",
-        "name": "Change to SecurityProtocolType.Tls12",
-        "search": "\\bSecurityProtocolType\\.(Ssl3|Tls|Tls11)\\b",
-        "replace": "SecurityProtocolType.Tls12"
-      }
-    ]
-  },
-  {
-    "disabled": false,
-    "id": "DS127101",
-    "overrides": null,
-    "name": "Hardcoding TLS protocol version",
-    "tags": [
-      "Cryptography.Protocol.TLS"
-    ],
-    "applies_to": [
-      "cpp"
-    ],
-    "description": "It's usually better to rely on the operating system configuration, rather than hardcoding a specific list of protocols.",
-    "replacement": "",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS127101.md",
-    "severity": "moderate",
-    "patterns": [
-      {
-        "pattern": "\\bSecPkgCred_SupportedProtocols\\b",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": null
-  },
-  {
-    "disabled": false,
-    "id": "DS169125",
-    "overrides": null,
-    "name": "Do not use outdated SSL/TLS protocols",
-    "tags": [
-      "Cryptography.Protocol.TLS"
-    ],
-    "applies_to": [],
-    "description": "An outdated SSL/TLS protocol version is specified.",
-    "replacement": "Use TLS 1.2",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS169125.md",
-    "severity": "important",
-    "patterns": [
-      {
-        "pattern": "\\b(SSLv?2|SSLv?3|TLSv?1|TLSv?10)\\b",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": null
-  },
-  {
-    "disabled": false,
-    "id": "DS169126",
-    "overrides": null,
-    "name": "An Outdated or Banned SSL/TLS Protocol is Used",
-    "tags": [
-      "Cryptography.Protocol.Banned"
-    ],
-    "applies_to": [],
-    "description": "An Outdated or Banned SSL/TLS Protocol is Used",
-    "replacement": "Use TLS 1.2",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS169126.md",
-    "severity": "important",
-    "patterns": [
-      {
-        "pattern": "(SSL|TLS)v(2|23|3|1)_(client|server)",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bSSLv2\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bSSLv3\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bTLSv1\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bTLSv10\\b",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": null
-  },
-  {
-    "disabled": false,
-    "id": "DS169127",
-    "overrides": null,
-    "name": "An Outdated or Banned SSL/TLS Protocol is Used",
-    "tags": [
-      "Cryptography.Protocol.Banned"
-    ],
-    "applies_to": [
-      "cpp",
-      "objective-c"
-    ],
-    "description": "An Outdated or Banned SSL/TLS Protocol is Used",
-    "replacement": "Use TLS 1.2",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS169126.md",
-    "severity": "important",
-    "patterns": [
-      {
-        "pattern": "\\bSECURITY_FLAG_40BIT\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bSECURITY_FLAG_56BIT\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bSECURITY_FLAG_NORMALBITNESS\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bSECURITY_FLAG_PCT\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bSECURITY_FLAG_PCT4\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bSECURITY_FLAG_SSL\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bSECURITY_FLAG_SSL3\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bSECURITY_FLAG_STRENGTH_MEDIUM\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bSECURITY_FLAG_STRENGTH_WEAK\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bSECURITY_FLAG_UNKNOWNBIT\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bWINHTTP_FLAG_SECURE_PROTOCOL_SSL2\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bWINHTTP_FLAG_SECURE_PROTOCOL_SSL3\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bWINHTTP_FLAG_SECURE_PROTOCOL_TLS1\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bWINHTTP_FLAG_SECURE_PROTOCOL_ALL\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bSECURITY_FLAG_STRENGTH_MEDIUM\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bSECURITY_FLAG_STRENGTH_WEAK\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "SP_PROT_(PCT1|SSL2|SSL3|TLS1|TLS1_0)_(CLIENT|SERVER)",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bNSStreamSocketSecurityLevelNone\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bNSStreamSocketSecurityLevelSSLv2\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bNSStreamSocketSecurityLevelSSLv3\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bNSStreamSocketSecurityLevelTLSv1\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bkCFStreamSocketSecurityLevelNone\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bkCFStreamSocketSecurityLevelSSLv2\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bkCFStreamSocketSecurityLevelSSLv3\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bkCFStreamSocketSecurityLevelTLSv1\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bkSSLProtocolUnknown \\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bkSSLProtocol3\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bkTLSProtocol1\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bkDTLSProtocol1\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bkSSLProtocol2\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bkSSLProtocol3Only\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bkTLSProtocol1Only\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bkSSLProtocolAll\\b",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": null
-  },
-  {
-    "disabled": false,
-    "id": "DS169128",
-    "overrides": null,
-    "name": "An Outdated or Banned SSL/TLS Protocol is Used",
-    "tags": [
-      "Cryptography.Protocol.Banned"
-    ],
-    "applies_to": [
-      "python"
-    ],
-    "description": "An Outdated or Banned SSL/TLS Protocol is Used",
-    "replacement": "Use TLS 1.2",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS169126.md",
-    "severity": "important",
-    "patterns": [
-      {
-        "pattern": "\\bPROTOCOL_SSLv2\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bPROTOCOL_SSLv23\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bPROTOCOL_SSLv3\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bPROTOCOL_TLSv1\\b",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": null
-  },
-  {
-    "disabled": false,
-    "id": "DS148264",
-    "overrides": null,
-    "name": "Do not use weak/non-cryptographic random number generators",
-    "tags": [
-      "Cryptography.PRNG.Weak"
-    ],
-    "applies_to": null,
-    "description": "Use cryptographic random numbers generators for anything even close to a security function.",
-    "replacement": "Replacements depend on language.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS148264.md",
-    "severity": "important",
-    "patterns": [
-      {
-        "pattern": "\\bDUAL_EC_DRBG\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bpseudoRandomBytes\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "rand\\(",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "random_shuffle\\(",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "shuffle\\(",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bRAND_MAX\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "rand\\(\\s*\\)\\s*%",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bmwc1616\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\b(32969|18273)\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bSystem.Random\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\bRandom\\(\\b",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "\\barc4random\\b",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": []
-  },
-  {
-    "disabled": false,
-    "id": "DS149435",
-    "overrides": null,
-    "name": "Do not seed randomness based on system time or a static value.",
-    "tags": [
-      "Cryptography.WeakRandomness"
-    ],
-    "applies_to": null,
-    "description": "Passing a predicable value to srand() is very insecure and should be avoided.",
-    "replacement": "",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS149435.md",
-    "severity": "critical",
-    "patterns": [
-      {
-        "pattern": "srand\\(\\s*time\\(",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "srand\\(\\s*\\d+\\s*\\)",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": []
-  },
-  {
-    "disabled": false,
-    "id": "DS109733",
-    "overrides": null,
-    "name": "Source implementation of a weak/broken cryptography hash function",
-    "tags": [
-      "Cryptography.HashAlgorithm.WeakOrBrokenImplementation"
-    ],
-    "applies_to": null,
-    "description": "An implementation of a weak/broken hash function was found in source code.",
-    "replacement": "Do not use MD5, and always prefer OS- or library-provided cryptography implementations.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS109733.md",
-    "severity": "critical",
-    "patterns": [
-      {
-        "pattern": "242070db|02441453|db702024|53144402|3572445317",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "98BADCFE|FEDCBC98|C3D2E1F0|F0E1D2C3",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": null
-  },
-  {
-    "disabled": false,
-    "id": "DS187371",
-    "overrides": null,
-    "name": "A weak cipher mode of operation was used",
-    "tags": [
-      "Cryptography.Symmetric.CipherMode.Weak"
-    ],
-    "applies_to": null,
-    "description": "A potentially weak cipher mode of operation was used.",
-    "replacement": "Consider using CBC, CTR, or GCM.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS187371.md",
-    "severity": "important",
-    "patterns": [
-      {
-        "pattern": "\\b(ECB|OFB|CFB|CTS|PCBC|GMAC|XCBC|IACBC|IAPM|EAX|OCB|CWC|AEAD|LRW|XEX|XTS|CMC|EME|CBCMAC|OMAC|PMAC)\\b",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": []
-  },
-  {
-    "disabled": false,
-    "id": "DS182720",
-    "overrides": null,
-    "name": "A weak cipher mode of operation was used",
-    "tags": [
-      "Cryptography.Symmetric.CipherMode.Weak"
-    ],
-    "applies_to": [
-      "php"
-    ],
-    "description": "A potentially weak cipher mode of operation was used.",
-    "replacement": "Consider using CBC, CTR, or GCM.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS182720.md",
-    "severity": "important",
-    "patterns": [
-      {
-        "pattern": "\\bMCRYPT_MODE_(ECB|CFB|OFB|NOFB|STREAM)\\b",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": [
-      {
-        "type": "regex-substitute",
-        "name": "Change cipher mode to CBC",
-        "search": "MCRYPT_MODE_(ECB|CFB|OFB|NOFB|STREAM)",
-        "replace": "MCRYPT_MODE_CBC"
-      }
-    ]
-  },
-  {
-    "disabled": false,
     "id": "DS184626",
-    "overrides": null,
     "name": "All Controllers Should Derive From Controller.",
+    "overrides": null,
+    "schema_version": 0,
     "tags": [
       "Implementation.Web.ASPNET.ControllerWithoutExtendingController"
     ],
     "applies_to": [
       "csharp"
     ],
-    "description": "All Controllers Should Derive From Controller.",
-    "replacement": "Ensure this class derives from Controller.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS184626.md",
     "severity": "moderate",
+    "description": "All Controllers Should Derive From Controller.",
+    "recommendation": "Ensure this class derives from Controller.",
+    "rule_info": "DS184626.md",
     "patterns": [
       {
         "pattern": "class [^\\s]+Controller\\s*:\\s*(?!.*?(Controller)).*",
         "type": "regex",
-        "modifiers": null
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
       },
       {
         "pattern": "class [^\\s]+Controller[\\s{]*$",
         "type": "regex",
-        "modifiers": null
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
       }
     ],
-    "fix_it": [
+    "conditions": [],
+    "fix_its": [
       {
-        "type": "regex-substitute",
         "name": "Change to inherit from Controller",
-        "search": "(class [^\\s]+Controller)(([\\s{]*$)|(\\s*:\\s*(?!.*?(Controller)).*))",
-        "replace": "$1 : Controller"
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "(class [^\\s]+Controller)(([\\s{]*$)|(\\s*:\\s*(?!.*?(Controller)).*))",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "$1 : Controller"
       }
     ]
   },
   {
-    "disabled": false,
-    "id": "DS144886",
+    "id": "DS114352",
+    "name": "Encryption Marked 'Optional'",
     "overrides": null,
-    "name": "$_REQUEST should be avoided",
+    "schema_version": 0,
     "tags": [
-      "Implementation.PHP"
+      "Cryptography.Optional"
+    ],
+    "applies_to": null,
+    "severity": "important",
+    "description": "Optional encryption or integrity checking can be dangerous.",
+    "recommendation": "As a best practice, always enable strong encryption and integrity checking.",
+    "rule_info": "DS114352.md",
+    "patterns": [
+      {
+        "pattern": "Integrity.*optional",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "Encryption.*optional",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS181865",
+    "name": "Disabled certificate validation",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.Certificate.Validation"
+    ],
+    "applies_to": [
+      "objective-c"
+    ],
+    "severity": "critical",
+    "description": "Extend default certificate validation, but do not disable or override default rules.",
+    "recommendation": "Always use a valid certificate, even during testing.",
+    "rule_info": "DS181865.md",
+    "patterns": [
+      {
+        "pattern": "setValidatesSecureCertificate:\\s*NO",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "setAllowsAnyHTTPSCertificate:\\s*YES",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "allowsAnyHTTPSCertificate\\s*=\\s*YES",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "setValidatesSecureCertificate:\\s*NO",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "validatesSecureCertificate\\s*=\\s*NO",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bcontinueWithoutCredentialForAuthenticationChallenge\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "kCFStreamSSL(Level|AllowsExpiredCertificates|AllowsExpiredRoots|AllowsAnyRoot|ValidatesCertificateChain|PeerName)",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bkCFStreamPropertySSLSettings\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS176603",
+    "name": "Disabled certificate validation",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.Certificate.Validation"
+    ],
+    "applies_to": [
+      "ruby"
+    ],
+    "severity": "critical",
+    "description": "Extend default certificate validation, but do not disable or override default rules.",
+    "recommendation": "Always use a valid certificate, even during testing.",
+    "rule_info": "DS114352.md",
+    "patterns": [
+      {
+        "pattern": "\\bOpenSSL::SSL::VERIFY_NONE\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS130822",
+    "name": "Disabled certificate validation",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.Certificate.Validation"
+    ],
+    "applies_to": [
+      "python"
+    ],
+    "severity": "critical",
+    "description": "Extend default certificate validation, but do not disable or override default rules.",
+    "recommendation": "Always use a valid certificate, even during testing.",
+    "rule_info": "DS130822.md",
+    "patterns": [
+      {
+        "pattern": "\\.check_hostname\\s*=\\s*False",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bdisable_ssl_certificate_validation\\s*=\\s*True\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS159369",
+    "name": "Disabled certificate validation",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.Certificate.Validation"
+    ],
+    "applies_to": [
+      "cpp"
+    ],
+    "severity": "critical",
+    "description": "Extend default certificate validation, but do not disable or override default rules.",
+    "recommendation": "Always use a valid certificate, even during testing.",
+    "rule_info": "DS114352.md",
+    "patterns": [
+      {
+        "pattern": "\\bSECURITY_FLAG_IGNORE_CERT_CN_INVALID\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bSECURITY_FLAG_IGNORE_CERT_DATE_INVALID\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bSECURITY_FLAG_IGNORE_REVOCATION\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bSECURITY_FLAG_IGNORE_UNKNOWN_CA\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bSECURITY_FLAG_IGNORE_WRONG_USAGE\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bSECURITY_FLAG_IGNORE_CERT_WRONG_USAGE\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS101940",
+    "name": "Disabled certificate validation",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.Certificate.Validation"
+    ],
+    "applies_to": [
+      ".config"
+    ],
+    "severity": "critical",
+    "description": "Extend default certificate validation, but do not disable or override default rules.",
+    "recommendation": "Always use a valid certificate, even during testing.",
+    "rule_info": "DS114352.md",
+    "patterns": [
+      {
+        "pattern": "\\bcertificateValidationMode=\"None\"\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bcheckCertificateName=\"false\"\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bcheckCertificateRevocationList=\"false\"\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "encryptionPolicy=\"(AllowNoEncryption|NoEncryption)",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS125134",
+    "name": "Disabled certificate validation",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.Certificate.Validation"
+    ],
+    "applies_to": [
+      "javascript"
+    ],
+    "severity": "critical",
+    "description": "Extend default certificate validation, but do not disable or override default rules.",
+    "recommendation": "Always use a valid certificate, even during testing.",
+    "rule_info": "DS114352.md",
+    "patterns": [
+      {
+        "pattern": "NODE_TLS_REJECT_UNAUTHORIZED|rejectUnauthorized",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS152094",
+    "name": "Disabled certificate validation",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.Certificate.Validation"
+    ],
+    "applies_to": [
+      "java"
+    ],
+    "severity": "critical",
+    "description": "Extend default certificate validation, but do not disable or override default rules.",
+    "recommendation": "Always use a valid certificate, even during testing.",
+    "rule_info": "DS114352.md",
+    "patterns": [
+      {
+        "pattern": "(TrustManager|getInsecure|HostnameVerifier|AbstractVerifier|AllowAllHostnameVerifier|BrowserCompatHostnameVerifier|StrictHostnameVerifier|onReceivedSslError|insecuresocketfactory|customhostnameverifier)",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS126185",
+    "name": "Disabled certificate validation",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.Certificate.Validation"
+    ],
+    "applies_to": [
+      "powershell"
+    ],
+    "severity": "critical",
+    "description": "Extend default certificate validation, but do not disable or override default rules.",
+    "recommendation": "Always use a valid certificate, even during testing.",
+    "rule_info": "DS114352.md",
+    "patterns": [
+      {
+        "pattern": "::ServerCertificateValidationCallback\\s*=\\s*{\\s*\\$true\\s*}",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS126186",
+    "name": "Disabled certificate validation",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.Certificate.Validation"
+    ],
+    "applies_to": [
+      "python"
+    ],
+    "severity": "critical",
+    "description": "Extend default certificate validation, but do not disable or override default rules.",
+    "recommendation": "Always use a valid certificate, even during testing.",
+    "rule_info": "DS114352.md",
+    "patterns": [
+      {
+        "pattern": "verify\\s*=\\s*False",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "pattern": {
+          "pattern": "requests.",
+          "type": "substring",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "search_in": null,
+        "negate_finding": false
+      }
+    ],
+    "fix_its": null
+  },
+  {
+    "id": "DS126187",
+    "name": "Disabled certificate validation",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.Certificate.Validation"
+    ],
+    "applies_to": [
+      "csharp"
+    ],
+    "severity": "critical",
+    "description": "Extend default certificate validation, but do not disable or override default rules.",
+    "recommendation": "Always use a valid certificate, even during testing.",
+    "rule_info": "DS114352.md",
+    "patterns": [
+      {
+        "pattern": "\\.ServerCertificateValidationCallback\\s*\\+?=\\s*delegate\\s*{\\s*return true;\\s*};",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\.ServerCertificateValidationCallback\\s*\\+?=\\s*\\(?[^\\)]+\\)\\s*=>\\s*{\\s*return true;\\s*};",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\.ServerCertificateValidationCallback\\s*\\+?=\\s*\\(+[^\\)]+\\)\\s*=>\\s*true",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "RemoteCertificateValidationCallback\\(delegate\\s*{\\s*return true;\\s*}\\);",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\.CertificatePolicy\\s*=\\s*delegate\\s*{\\s*return true;\\s*};",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bX509CertificateValidationMode.None\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS175862",
+    "name": "Do not use the mcrypt module, use OpenSSL instead.",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.Library.Abandoned"
     ],
     "applies_to": [
       "php"
     ],
-    "description": "$_REQUEST combines POST, GET, and cookie values in one array, making it easy for an attacker to modify a POST or cookie value by instead putting it in a GET and sending the URL to the victim",
-    "replacement": "Use $_POST, $_GET, $_COOKIE to scope to the expected delivery method for a value ",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS144886.md",
     "severity": "moderate",
+    "description": "The PHP mcrypt module is based on libmcrypt, which has been abanonded since 2007.",
+    "recommendation": "OpenSSL",
+    "rule_info": "DS175862.md",
     "patterns": [
       {
-        "pattern": "\\$_REQUEST",
+        "pattern": "\\bmcrypt\\b",
         "type": "regex",
-        "modifiers": null
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
       }
     ],
-    "fix_it": [
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS109501",
+    "name": "Do not use the 3DES symmetric block cipher.",
+    "overrides": [
+      "DS106864"
+    ],
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.Symmetric.PotentiallyWeakAlgorithm"
+    ],
+    "applies_to": [
+      "csharp"
+    ],
+    "severity": "moderate",
+    "description": "The 3DES cipher was found, which is only secure if three independent keys are used.",
+    "recommendation": "Use AES instead.",
+    "rule_info": "DS109501.md",
+    "patterns": [
       {
-        "type": "regex-substitute",
-        "name": "Change to $_GET",
-        "search": "\\$_REQUEST",
-        "replace": "$$_GET"
-      },
+        "pattern": "\\bTripleDESCryptoServiceProvider\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": [
       {
-        "type": "regex-substitute",
-        "name": "Change to $_POST",
-        "search": "\\$_REQUEST",
-        "replace": "$$_POST"
-      },
-      {
-        "type": "regex-substitute",
-        "name": "Change to $_COOKIE",
-        "search": "\\$_REQUEST",
-        "replace": "$$_COOKIE"
+        "name": "Change to AESCryptoServiceProvider",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "TripleDESCryptoServiceProvider",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "AESCryptoServiceProvider"
       }
     ]
   },
   {
-    "disabled": false,
-    "id": "DS162092",
+    "id": "DS106863",
+    "name": "Do not use the DES symmetric block cipher.",
     "overrides": null,
-    "name": "Do not leave debug code in production",
+    "schema_version": 0,
     "tags": [
-      "Hygiene.Network.AccessingLocalhost"
+      "Cryptography.Symmetric.WeakOrBrokenAlgorithm"
     ],
-    "applies_to": null,
-    "description": "Accessing localhost could indicate debug code, or could hinder scaling.",
-    "replacement": "",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS162092.md",
-    "severity": "manual-review",
+    "applies_to": [],
+    "severity": "critical",
+    "description": "The DES cipher was found, which is widely considered to be broken.",
+    "recommendation": "Use AES instead.",
+    "rule_info": "DS106863.md",
     "patterns": [
       {
-        "pattern": "\\blocalhost\\b",
+        "pattern": "\\bDES\\b",
         "type": "regex",
-        "modifiers": null
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": [
+      {
+        "name": "Change to AES",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "DES",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "AES"
+      }
+    ]
+  },
+  {
+    "id": "DS106864",
+    "name": "Do not use the DES symmetric block cipher.",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.Symmetric.WeakOrBrokenAlgorithm"
+    ],
+    "applies_to": [
+      "csharp"
+    ],
+    "severity": "critical",
+    "description": "The DES cipher was found, which is widely considered to be broken.",
+    "recommendation": "Use AES instead.",
+    "rule_info": "DS106864.md",
+    "patterns": [
+      {
+        "pattern": "\\bDESCryptoServiceProvider\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": [
+      {
+        "name": "Change to AESCryptoServiceProvider",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "DESCryptoServiceProvider",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "AESCryptoServiceProvider"
+      }
+    ]
+  },
+  {
+    "id": "DS106865",
+    "name": "Do not use the DES symmetric block cipher.",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.Symmetric.WeakOrBrokenAlgorithm.DES"
+    ],
+    "applies_to": [
+      "javascript"
+    ],
+    "severity": "critical",
+    "description": "The DES cipher was found, which is widely considered to be broken.",
+    "recommendation": "Use AES instead.",
+    "rule_info": "DS106865.md",
+    "patterns": [
+      {
+        "pattern": "['\"](?:DES(?:-(?:C(?:BC|FB[18]?)|E(?:CB|DE(?:-(?:C(?:BC|FB)|OFB))?)|OFB))?)['\"]",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": [
+      {
+        "name": "Change to AES-128-CBC",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "(?:DES(?:-(?:C(?:BC|FB[18]?)|E(?:CB|DE(?:-(?:C(?:BC|FB)|OFB))?)|OFB))?)",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "AES-128-CBC"
+      }
+    ]
+  },
+  {
+    "id": "DS106866",
+    "name": "Do not use the DES symmetric block cipher.",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.Symmetric.WeakOrBrokenAlgorithm.DES"
+    ],
+    "applies_to": [
+      "java"
+    ],
+    "severity": "critical",
+    "description": "The DES cipher was found, which is widely considered to be broken.",
+    "recommendation": "Use AES instead.",
+    "rule_info": "DS106866.md",
+    "patterns": [
+      {
+        "pattern": "DESEngine|DESedeEngine",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": [
+      {
+        "name": "Change to AESEngine",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "DESEngine|DESedeEngine",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "AESEngine"
+      }
+    ]
+  },
+  {
+    "id": "DS156431",
+    "name": "Do not use the RC2 symmetric block cipher.",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.Symmetric.WeakOrBrokenAlgorithm.RC2"
+    ],
+    "applies_to": [
+      "csharp"
+    ],
+    "severity": "critical",
+    "description": "The RC2 cipher was found, which is considered to be broken.",
+    "recommendation": "Use AES instead.",
+    "rule_info": "DS156431.md",
+    "patterns": [
+      {
+        "pattern": "\\bRC2CryptoServiceProvider\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": [
+      {
+        "name": "Change to AESCryptoServiceProvider",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "RC2CryptoServiceProvider",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "AESCryptoServiceProvider"
+      }
+    ]
+  },
+  {
+    "id": "DS154189",
+    "name": "Banned C function detected",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "API.DangerousAPI.BannedFunction"
+    ],
+    "applies_to": [
+      "c",
+      "cpp",
+      "objective-c"
+    ],
+    "severity": "moderate",
+    "description": "These functions are historically error-prone and have been associated with a significant number of vulnerabilities. Most of these functions have safer alternatives, such as replacing 'strcpy' with 'strlcpy' or 'strcpy_s'.",
+    "recommendation": "",
+    "rule_info": "DS154189.md",
+    "patterns": [
+      {
+        "pattern": "\\b(sprintf|_getts|_getws|_snprintf|_sntprintf|_snwprintf|_stprintf|_tcsat|_tcscpy|_tcslen|_tcsncpy|_vsnprintf|_vsntprintf|_vsnwprintf|_vstprintf|alloca|asctime|atof|atoi|atoll|bsearch|ctime|fopen|fprintf|freopen|fscanf|fwprintf|fwscanf|getenv|getwd|gmtime|localtime|lstrcat|lstrcpy|mbsrtowcs|mbstowcs|memmove|mktemp|printf|qsort|rewind|scanf|setbuf|sscanf|strcatbuff|strerror|strtok|swprintf|swscanf|tmpnam|vfprintf|vfscanf|vfwscanf|vprintf|vscanf|vsnprintf|vsprintf|vsscanf|vswprintf|vswscanf|vwprintf|vwscanf|wcrtomb|wcrtombs|wcscat|wcscpy|wcslen|wcsncat|wcsncpy|wcsrtombs|wcstok|wctomb|wmemcpy|wmemmove|wnsprintf|wprintf|wscanf|wsprintf|wvnsprintf|wvsprintf)\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS185832",
+    "name": "Banned C function detected (strcpy)",
+    "overrides": [
+      "DS154189"
+    ],
+    "schema_version": 0,
+    "tags": [
+      "API.DangerousAPI.BannedFunction"
+    ],
+    "applies_to": [
+      "c",
+      "cpp",
+      "objective-c"
+    ],
+    "severity": "important",
+    "description": "strcpy is frequently dangerous, as it will cause a buffer overflow if the source is larger than the destination.",
+    "recommendation": "Use strcpy_s or strlcpy if possible. If no safe function is viable, strcpy/strncpy should be proceeded by conditional checks to verify tha that the source string will fit in the destination with a null termnator.",
+    "rule_info": "DS185832.md",
+    "patterns": [
+      {
+        "pattern": "\\bstrcpy\\s*\\(([^,]+),([^,]+)\\)",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": [
+      {
+        "name": "Change to strcpy_s (Recommended for VC++)",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "\\bstrcpy\\s*\\(([^,]+),([^,]+)\\)",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "strcpy_s($1, <size of $1>, $2)"
       },
       {
-        "pattern": "\\b127.0.0.1\\b",
-        "type": "regex",
-        "modifiers": null
+        "name": "Change to strlcpy",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "\\bstrcpy\\s*\\(([^,]+),([^,]+)\\)",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "strlcpy($1, $2, <size of $1>)"
       }
-    ],
-    "fix_it": []
+    ]
   },
   {
-    "disabled": false,
-    "id": "DS176209",
-    "overrides": null,
-    "name": "Suspicious comment",
-    "tags": [
-      "Hygiene.Comment.Suspicious"
+    "id": "DS111237",
+    "name": "Banned C function detected (strncpy)",
+    "overrides": [
+      "DS154189"
     ],
-    "applies_to": null,
-    "description": "A \"TODO\" or similar was left in source code, possibly indicating incomplete functionality",
-    "replacement": "",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS176209.md",
-    "severity": "manual-review",
+    "schema_version": 0,
+    "tags": [
+      "API.DangerousAPI.BannedFunction"
+    ],
+    "applies_to": [
+      "c",
+      "cpp",
+      "objective-c"
+    ],
+    "severity": "important",
+    "description": "strncpy is dangerous, as if the source contains 'n' or more characters, it will not null terminate the destination.",
+    "recommendation": "Use strcpy_s or strlcpy if possible. If no safe function is viable, strcpy/strncpy should be proceeded by conditional checks to verify tha that the source string will fit in the destination with a null termnator.",
+    "rule_info": "DS111237.md",
     "patterns": [
       {
-        "pattern": "\\b(TODO|FIXME|REMOVEME|HACK|BLACK MAGIC)\\b",
+        "pattern": "\\bstrncpy\\s*\\(([^,]+),([^,]+),([^,]+)\\)+",
         "type": "regex",
-        "modifiers": null
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
       }
     ],
-    "fix_it": []
+    "conditions": [],
+    "fix_its": [
+      {
+        "name": "Change to strcpy_s (Recommended for VC++)",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "\\bstrncpy\\s*\\(([^,]+),([^,]+),([^,]+)\\)+",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "strcpy_s($1, $3, $2)"
+      },
+      {
+        "name": "Change to strlcpy",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "\\bstrncpy\\s*\\(([^,]+),([^,]+),([^,]+)\\)+",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "strlcpy($1, $2, $3)"
+      }
+    ]
   },
   {
-    "disabled": false,
-    "id": "DS189424",
+    "id": "DS141863",
+    "name": "Banned C function detected (strcat)",
+    "overrides": [
+      "DS154189"
+    ],
+    "schema_version": 0,
+    "tags": [
+      "API.DangerousAPI.BannedFunction"
+    ],
+    "applies_to": [
+      "c",
+      "cpp",
+      "objective-c"
+    ],
+    "severity": "important",
+    "description": "If the combination of strings is larger than the destination buffer, strcat will cbuffer overflow the destination buffer",
+    "recommendation": "Use strcat_s or strlcat if possible. strncat's size parameter excludes the null terminator, which leads to frequent mistakes",
+    "rule_info": "DS141863.md",
+    "patterns": [
+      {
+        "pattern": "\\bstrcat\\s*\\(([^,]+),([^,]+)\\)",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": [
+      {
+        "name": "Change to strcat_s (Recommended for VC++)",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "\\bstrcat\\s*\\(([^,]+),([^,]+)\\)",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "strcat_s($1, <size of $1>, $2)"
+      },
+      {
+        "name": "Change to strlcat",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "\\bstrcat\\s*\\(([^,]+),([^,]+)\\)",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "strlcat($1, $2, <size of $1>)"
+      }
+    ]
+  },
+  {
+    "id": "DS108330",
+    "name": "Banned C function detected (strncat)",
+    "overrides": [
+      "DS154189"
+    ],
+    "schema_version": 0,
+    "tags": [
+      "API.DangerousAPI.BannedFunction"
+    ],
+    "applies_to": [
+      "c",
+      "cpp",
+      "objective-c"
+    ],
+    "severity": "important",
+    "description": "strncat adds the null terminator at character 'n + 1', rather than at the nth character. this frequently leads to the null terminator being added in the memory adjacent to the destination buffer, rather than in the destination buffer.",
+    "recommendation": "Use strcat_s or strlcat if possible. ",
+    "rule_info": "DS108330.md",
+    "patterns": [
+      {
+        "pattern": "\\bstrncat\\s*\\(([^,]+),([^,]+),([^,]+)\\)+",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": [
+      {
+        "name": "Change to strcat_s (Recommended for VC++)",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "\\bstrncat\\s*\\(([^,]+),([^,]+),([^,]+)\\)+",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "strcat_s($1, $3, $2)"
+      },
+      {
+        "name": "Change to strlcat",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "\\bstrncat\\s*\\(([^,]+),([^,]+),([^,]+)\\)+",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "strlcat($1, $2, $3)"
+      }
+    ]
+  },
+  {
+    "id": "DS181021",
+    "name": "Banned C function detected (gets)",
+    "overrides": [
+      "DS154189"
+    ],
+    "schema_version": 0,
+    "tags": [
+      "API.DangerousAPI.BannedFunction"
+    ],
+    "applies_to": [
+      "c",
+      "cpp",
+      "objective-c"
+    ],
+    "severity": "important",
+    "description": "gets will read in as many bytes as are provided, regardless of the size of buffer recieving the bytes.  This allows for conditions that cause a buffer overlow in the destination buffer.",
+    "recommendation": "Use gets_s or fgets if possible. fgets has different behavior from gets (may include newline for example), so care should be taken if it is used.",
+    "rule_info": "DS181021.md",
+    "patterns": [
+      {
+        "pattern": "\\bgets\\s*\\(([^,\\)]+)\\)",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": [
+      {
+        "name": "Change to gets_s (Recommended for VC++)",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "\\bgets\\s*\\(([^,\\)]+)\\)",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "gets_s($1, <size of $1>)"
+      },
+      {
+        "name": "Change to fgets",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "\\bgets\\s*\\(([^,\\)]+)\\)",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "fgets($1, <size of $1>, stdin)"
+      }
+    ]
+  },
+  {
+    "id": "DS425000",
+    "name": "Do not deserialize untrusted data.",
     "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Deserialization"
+    ],
+    "applies_to": [
+      "python"
+    ],
+    "severity": "manual-review",
+    "description": "Deserializing attacker-supplied data using `pickle` or `cPickle` can result in code execution.",
+    "recommendation": "Either add integrity protection or use a data format like JSON.",
+    "rule_info": "DS425000.md",
+    "patterns": [
+      {
+        "pattern": "\\bpickle.load\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS425010",
+    "name": "Do not deserialize untrusted data.",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Deserialization"
+    ],
+    "applies_to": [
+      "java"
+    ],
+    "severity": "manual-review",
+    "description": "Deserializing attacker-supplied data using `readObject` can result in code execution.",
+    "recommendation": "Either add integrity protection or use a data format like JSON.",
+    "rule_info": "DS425000.md",
+    "patterns": [
+      {
+        "pattern": ".readObject(",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS425020",
+    "name": "Do not deserialize untrusted data.",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Deserialization"
+    ],
+    "applies_to": [
+      "php"
+    ],
+    "severity": "manual-review",
+    "description": "Deserializing attacker-supplied data using `unserialize` can result in code execution.",
+    "recommendation": "Either add integrity protection or use a data format like JSON.",
+    "rule_info": "DS425000.md",
+    "patterns": [
+      {
+        "pattern": "\\bunserialize(\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS425030",
+    "name": "Do not deserialize untrusted data.",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Deserialization"
+    ],
+    "applies_to": [
+      "ruby"
+    ],
+    "severity": "manual-review",
+    "description": "Deserializing attacker-supplied data using YAML, Syck, or Marshall can result in code execution.",
+    "recommendation": "Either add integrity protection or use a data format like JSON.",
+    "rule_info": "DS425000.md",
+    "patterns": [
+      {
+        "pattern": "(YAML|Syck|Marshal)\\.load",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS425040",
+    "name": "Do not deserialize untrusted data.",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Deserialization"
+    ],
+    "applies_to": [
+      "csharp"
+    ],
+    "severity": "manual-review",
+    "description": "Deserializing attacker-supplied data using Newtonsoft.JSON with TypeNameHandling can result in code execution.",
+    "recommendation": "Use TypeNameHandling.None",
+    "rule_info": "DS425000.md",
+    "patterns": [
+      {
+        "pattern": "TypeNameHandling\\.(Objects|Arrays|Auto|All)",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": [
+      {
+        "name": "Change to TypeNameHandling.None",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "TypeNameHandling\\.(Objects|Arrays|Auto|All)",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "TypeNameHandling.None"
+      }
+    ]
+  },
+  {
+    "id": "DS165348",
+    "name": "Do not attempt to access device UDID",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Implementation.Mobile.iOS.DataProtection.Privacy.UDID"
+    ],
+    "applies_to": [
+      "objective-c"
+    ],
+    "severity": "important",
+    "description": "Access to the device UDID (via [[UIDevice currentDevice] uniqueIdentifier]) is deprecated as of iOS 5 and should not be used or relied upon.",
+    "recommendation": "[[UIDevice currentDevice] identifierForVendor]",
+    "rule_info": "DS165348.md",
+    "patterns": [
+      {
+        "pattern": "\\buniqueIdentifier\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS189424",
     "name": "Review eval for untrusted data",
+    "overrides": null,
+    "schema_version": 0,
     "tags": [
       "Python.DangerousFunctionCall",
       "JavaScript.DangerousFunctionCall",
@@ -2171,24 +1421,29 @@
       "typescript",
       "php"
     ],
-    "description": "If untrusted data (data from HTTP requests, user submitted files, etc.) is included in an eval statement it can allow enable an attacker to inject their own code.",
-    "replacement": "Edit the eval so that no untrusted date is included.  If untrusted data is absolutely necessary a great deal of care should be taken to ensure it is properly escaped so that it cannot be executed.  This is not as simple as just escaping quotes.",
-    "rule_info": "https://github.com/microsoft/devskim/blob/master/guidance/DS189424.md",
     "severity": "manual-review",
+    "description": "If untrusted data (data from HTTP requests, user submitted files, etc.) is included in an eval statement it can allow enable an attacker to inject their own code.",
+    "recommendation": "Edit the eval so that no untrusted date is included.  If untrusted data is absolutely necessary a great deal of care should be taken to ensure it is properly escaped so that it cannot be executed.  This is not as simple as just escaping quotes.",
+    "rule_info": "DS189424.md",
     "patterns": [
       {
         "pattern": "\\beval\\(([^,]+)\\)",
         "type": "regex",
-        "modifiers": null
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
       }
     ],
-    "fix_it": []
+    "conditions": [],
+    "fix_its": null
   },
   {
-    "disabled": false,
     "id": "DS172411",
-    "overrides": null,
     "name": "Review setTimeout for untrusted data",
+    "overrides": null,
+    "schema_version": 0,
     "tags": [
       "JavaScript.DangerousFunctionCall",
       "TypeScript.DangerousFunctionCall"
@@ -2197,24 +1452,29 @@
       "javascript",
       "typescript"
     ],
-    "description": "If untrusted data (data from HTTP requests, user submitted files, etc.) is included in an setTimeout statement it can allow enable an attacker to inject their own code.",
-    "replacement": "Edit the setTimeout so that no untrusted date is included.  If untrusted data is absolutely necessary a great deal of care should be taken to ensure it is properly escaped so that it cannot be executed.  This is not as simple as just escaping quotes.",
-    "rule_info": "https://github.com/microsoft/devskim/blob/master/guidance/DS172411.md",
     "severity": "manual-review",
+    "description": "If untrusted data (data from HTTP requests, user submitted files, etc.) is included in an setTimeout statement it can allow enable an attacker to inject their own code.",
+    "recommendation": "Edit the setTimeout so that no untrusted date is included.  If untrusted data is absolutely necessary a great deal of care should be taken to ensure it is properly escaped so that it cannot be executed.  This is not as simple as just escaping quotes.",
+    "rule_info": "DS172411.md",
     "patterns": [
       {
         "pattern": "\\bsetTimeout\\(([^,]+)\\)",
         "type": "regex",
-        "modifiers": null
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
       }
     ],
-    "fix_it": []
+    "conditions": [],
+    "fix_its": null
   },
   {
-    "disabled": false,
     "id": "DS172412",
-    "overrides": null,
     "name": "Review unsafe code",
+    "overrides": null,
+    "schema_version": 0,
     "tags": [
       "Dotnet.Unsafecode"
     ],
@@ -2222,371 +1482,2792 @@
       "csharp",
       "vb"
     ],
-    "description": "The unsafe keyword denotes an unsafe context, which is required for any operation involving pointers. Unsafe code in is not necessarily dangerous; it is just code whose safety cannot be verified by the CLR.",
-    "replacement": null,
-    "rule_info": "https://github.com/microsoft/devskim/blob/master/guidance/DS172412.md",
     "severity": "manual-review",
+    "description": "The unsafe keyword denotes an unsafe context, which is required for any operation involving pointers. Unsafe code in is not necessarily dangerous; it is just code whose safety cannot be verified by the CLR.",
+    "recommendation": "",
+    "rule_info": "DS172412.md",
     "patterns": [
       {
         "pattern": "\\bunsafe\\b",
         "type": "regex",
-        "modifiers": null
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
       }
     ],
-    "fix_it": []
+    "conditions": [],
+    "fix_its": null
   },
   {
-    "disabled": false,
-    "id": "DS165348",
+    "id": "DS165746",
+    "name": "Do not execute user-provided JavaScript",
     "overrides": null,
-    "name": "Do not attempt to access device UDID",
+    "schema_version": 0,
     "tags": [
-      "Implementation.Mobile.iOS.DataProtection.Privacy.UDID"
+      "Design.Mobile.iOS.WebView.DynamicJavaScript"
     ],
     "applies_to": [
       "objective-c"
     ],
-    "description": "Access to the device UDID (via [[UIDevice currentDevice] uniqueIdentifier]) is deprecated as of iOS 5 and should not be used or relied upon.",
-    "replacement": "[[UIDevice currentDevice] identifierForVendor]",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS165348.md",
     "severity": "important",
+    "description": "This line of code shows the dynamic evaluation of JavaScript, sourced from a string. It's important that this string not contain unsanitized user-supplied data, as it could be a vector for a cross-site scripting (XSS) attack.",
+    "recommendation": "",
+    "rule_info": "DS165746.md",
     "patterns": [
       {
-        "pattern": "\\buniqueIdentifier\\b",
+        "pattern": "\\bstringByEvaluatingJavaScriptFromString\\b",
         "type": "regex",
-        "modifiers": null
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
       }
     ],
-    "fix_it": []
+    "conditions": [],
+    "fix_its": null
   },
   {
-    "disabled": false,
-    "id": "DS173237",
-    "overrides": null,
-    "name": "Do not store tokens or keys in source code.",
-    "tags": [
-      "Implementation.Privacy.Token"
-    ],
-    "applies_to": null,
-    "description": "A token or key was found in source code. If this represents a secret, it should be moved somewhere else.",
-    "replacement": "",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS173237.md",
-    "severity": "important",
-    "patterns": [
-      {
-        "pattern": "[a-f0-9]{30,}",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": []
-  },
-  {
-    "disabled": false,
-    "id": "DS117838",
-    "overrides": [
-      "DS173237"
-    ],
-    "name": "Do not store tokens or keys in source code.",
-    "tags": [
-      "Implementation.Privacy.Token"
-    ],
-    "applies_to": null,
-    "description": "A token or key was found in source code. If this represents a secret, it should be moved somewhere else.",
-    "replacement": "",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS117838.md",
-    "severity": "critical",
-    "patterns": [
-      {
-        "pattern": "(secret|license|key|pass).*[a-f0-9]{30,}",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": []
-  },
-  {
-    "disabled": false,
-    "id": "DS112266",
-    "overrides": null,
-    "name": "ProtectedData used without additional entropy",
-    "tags": [
-      "Storage.Windows.DPAPI"
-    ],
-    "applies_to": [
-      "csharp"
-    ],
-    "description": "The ProtectedData class should be used with additional entropy to reduce the risk of other application calling DPAPI to access the data.",
-    "replacement": "Add additional entropy (per-application secret).",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS112266.md",
-    "severity": "moderate",
-    "patterns": [
-      {
-        "pattern": "ProtectedData\\.Protect.*,\\s*null.*",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": [
-      {
-        "type": "regex-substitute",
-        "name": "Add entropy placeholder",
-        "search": "(ProtectedData\\.Protect[^,]+,\\s*)null(.*)",
-        "replace": "$1<entropy>$2"
-      }
-    ]
-  },
-  {
-    "disabled": false,
-    "id": "DS191340",
-    "overrides": null,
-    "name": "Do not store sensitive data in NSUserDefaults.",
-    "tags": [
-      "Storage.Apple.iOS.UserDefaults.SensitiveData"
-    ],
-    "applies_to": [
-      "objective-c"
-    ],
-    "description": "Do not store sensitive data in NSUserDefaults.",
-    "replacement": "Consider another mechanism instead.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS191340.md",
-    "severity": "moderate",
-    "patterns": [
-      {
-        "pattern": "NSUserDefaults \\*(.*) = \\[NSUserDefaults standardUserDefaults\\];(\\n.*){1,5}$1 .*setString:(password|key)",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": []
-  },
-  {
-    "disabled": false,
-    "id": "DS378900",
-    "overrides": null,
-    "name": "Vulnerable NuGet Library",
-    "tags": [
-      "Vulerable-Dependency.Library.NuGet"
-    ],
-    "applies_to": [
-      "packages.config"
-    ],
-    "description": "Vulnerabilities in ASP.NET Core View Components Could Allow Elevation of Privilege",
-    "replacement": "Upgrade this package to a later, unaffected version.",
-    "rule_info": "https://technet.microsoft.com/en-us/library/security/3181759",
-    "severity": "moderate",
-    "patterns": [
-      {
-        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc\" version=\"1.0.0\"",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.Abstractions\" version=\"1.0.0\"",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.ApiExplorer\" version=\"1.0.0\"",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.Core\" version=\"1.0.0\"",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.Cors\" version=\"1.0.0\"",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.DataAnnotations\" version=\"1.0.0\"",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.Formatters.Json\" version=\"1.0.0\"",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.Formatters.Xml\" version=\"1.0.0\"",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.Localization\" version=\"1.0.0\"",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.Razor\" version=\"1.0.0\"",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.Razor.Host\" version=\"1.0.0\"",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.TagHelpers\" version=\"1.0.0\"",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.ViewFeatures\" version=\"1.0.0\"",
-        "type": "regex",
-        "modifiers": null
-      },
-      {
-        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.WebApiCompatShim\" version=\"1.0.0\"",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": []
-  },
-  {
-    "disabled": false,
-    "id": "DS378901",
-    "overrides": null,
-    "name": "Vulnerable NuGet Library",
-    "tags": [
-      "Vulerable-Dependency.Library.NuGet"
-    ],
-    "applies_to": [
-      "packages.config"
-    ],
-    "description": "Vulnerabilities in Identity Model Extensions Token Signing Verification Could Allow Elevation of Privilege",
-    "replacement": "Upgrade this package to a later, unaffected version.",
-    "rule_info": "https://technet.microsoft.com/en-us/library/security/3214296",
-    "severity": "moderate",
-    "patterns": [
-      {
-        "pattern": "<package id=\"Microsoft.IdentityModel.Tokens\" version=\"5.1.0\"",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": []
-  },
-  {
-    "disabled": false,
-    "id": "DS378902",
-    "overrides": null,
-    "name": "Vulnerable NuGet Library",
-    "tags": [
-      "Vulerable-Dependency.Library.NuGet"
-    ],
-    "applies_to": [
-      "packages.config"
-    ],
-    "description": "Vulnerability in ASP.NET Core MVC 1.1.0 Could Allow Denial of Service",
-    "replacement": "Upgrade this package to a later, unaffected version.",
-    "rule_info": "https://technet.microsoft.com/en-us/library/security/4010983",
-    "severity": "moderate",
-    "patterns": [
-      {
-        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.Core\" version=\"1.1.0\"",
-        "type": "regex",
-        "modifiers": null
-      }
-    ],
-    "fix_it": []
-  },
-  {
-    "disabled": false,
     "id": "DS132779",
-    "overrides": null,
     "name": "Do not enable external entity resolution.",
+    "overrides": null,
+    "schema_version": 0,
     "tags": [
       "Implementation.iOS.XML.DTDEntityResolution"
     ],
     "applies_to": [
       "objective-c"
     ],
-    "description": "Do not enable external entity resolution.",
-    "replacement": "Set shouldResolveExternalEntities to NO.",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS132779.md",
     "severity": "moderate",
+    "description": "Do not enable external entity resolution.",
+    "recommendation": "Set shouldResolveExternalEntities to NO.",
+    "rule_info": "DS132779.md",
     "patterns": [
       {
         "pattern": "\\bshouldResolveExternalEntities\\s*=\\s*YES\\b",
         "type": "regex",
-        "modifiers": null
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
       }
     ],
-    "fix_it": [
+    "conditions": [],
+    "fix_its": [
       {
-        "type": "regex-substitute",
         "name": "Disable external entity resolution",
-        "search": "(shouldResolveExternalEntities\\s*=\\s*)(YES)",
-        "replace": "$1NO"
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "(shouldResolveExternalEntities\\s*=\\s*)(YES)",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "$1NO"
       }
     ]
   },
   {
-    "disabled": false,
     "id": "DS132780",
-    "overrides": null,
     "name": "Do not enable external entity resolution.",
+    "overrides": null,
+    "schema_version": 0,
     "tags": [
       "Implementation.iOS.XML.DTDEntityResolution"
     ],
     "applies_to": [
       "swift"
     ],
-    "description": "Do not enable external entity resolution.",
-    "replacement": "x.setShouldResolveExternalEntities = FALSE;",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS132780.md",
     "severity": "moderate",
+    "description": "Do not enable external entity resolution.",
+    "recommendation": "x.setShouldResolveExternalEntities = FALSE;",
+    "rule_info": "DS132780.md",
     "patterns": [
       {
         "pattern": "\\bshouldResolveExternalEntities\\s*=\\s*TRUE\\b",
         "type": "regex",
-        "modifiers": null
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
       }
     ],
-    "fix_it": [
+    "conditions": [],
+    "fix_its": [
       {
-        "type": "regex-substitute",
         "name": "Disable external entity resolution",
-        "search": "(shouldResolveExternalEntities\\s*=\\s*)(TRUE)",
-        "replace": "$1FALSE"
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "(shouldResolveExternalEntities\\s*=\\s*)(TRUE)",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "$1FALSE"
       }
     ]
   },
   {
-    "disabled": false,
     "id": "DS132790",
-    "overrides": null,
     "name": "Do not enable external entity resolution.",
+    "overrides": null,
+    "schema_version": 0,
     "tags": [
       "Implementation.iOS.XML.DTDEntityResolution"
     ],
     "applies_to": [
       "objective-c"
     ],
-    "description": "Do not enable external entity resolution.",
-    "replacement": "[x setShouldResolveExternalEntities: NO];",
-    "rule_info": "https://github.com/Microsoft/DevSkim/blob/master/guidance/DS132790.md",
     "severity": "moderate",
+    "description": "Do not enable external entity resolution.",
+    "recommendation": "[x setShouldResolveExternalEntities: NO];",
+    "rule_info": "DS132790.md",
     "patterns": [
       {
         "pattern": "\\bsetShouldResolveExternalEntities:\\s*YES\\b",
         "type": "regex",
-        "modifiers": null
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
       }
     ],
-    "fix_it": [
+    "conditions": [],
+    "fix_its": [
       {
-        "type": "regex-substitute",
         "name": "Disable external entity resolution",
-        "search": "(setShouldResolveExternalEntities:\\s*)(YES)",
-        "replace": "$1NO"
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "(setShouldResolveExternalEntities:\\s*)(YES)",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "$1NO"
+      }
+    ]
+  },
+  {
+    "id": "DS113286",
+    "name": "Do not include user-input directoy in format strings",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "ControlFlow.Injection.FormatString",
+      "cert:FIO30-C"
+    ],
+    "applies_to": [
+      "objective-c"
+    ],
+    "severity": "important",
+    "description": "Do not create NSString objects using a user-provided format string, as this could lead to a security vulnerability. https://www.securecoding.cert.org/confluence/display/c/FIO30-C.+Exclude+user+input+from+format+strings",
+    "recommendation": "",
+    "rule_info": "DS113286.md",
+    "patterns": [
+      {
+        "pattern": "\\[NSString stringWithFormat:\\s*([^@\\\"\\]]+\\])",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": [
+      {
+        "name": "Use a predefined format string",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "\\[NSString stringWithFormat:\\s*([^@\\\"\\]]+\\])",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "[NSString stringWithFormat:@\"%@\", $1"
+      }
+    ]
+  },
+  {
+    "id": "DS101155",
+    "name": "Disabled certificate validation",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.Certificate.Validation"
+    ],
+    "applies_to": null,
+    "severity": "critical",
+    "description": "Extend default certificate validation, but do not disable or override default rules.",
+    "recommendation": "Always use a valid certificate, even during testing.",
+    "rule_info": "DS101155.md",
+    "patterns": [
+      {
+        "pattern": "\\bencrypt=false\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bencryption=false\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "unencrypted.*password",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "TODO.*crypt",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS101159",
+    "name": "Initializing Security Context",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.SecurityContext.Initialization"
+    ],
+    "applies_to": [
+      "cpp"
+    ],
+    "severity": "manual-review",
+    "description": "SecurityContext initialization, look here for cryptography functions.",
+    "recommendation": "",
+    "rule_info": "DS101159.md",
+    "patterns": [
+      {
+        "pattern": "\\bInitializeSecurityContext\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS126858",
+    "name": "Weak/Broken Hash Algorithm",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.BannedHashAlgorithm"
+    ],
+    "applies_to": null,
+    "severity": "critical",
+    "description": "A weak or broken hash algorithm was detected.",
+    "recommendation": "Consider switching to use SHA-256 or SHA-512 instead.",
+    "rule_info": "DS126858.md",
+    "patterns": [
+      {
+        "pattern": "(MD2|MD4|MD5|RIPEMD|RIPEMD(128|256|160|320)|(SHA0|SHA-0|SHA1|SHA-1))",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": [
+      {
+        "name": "Change to \"SHA256\"",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "(MD2|MD4|MD5|RIPEMD|RIPEMD(128|256|160|320)|(SHA0|SHA-0|SHA1|SHA-1))",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "SHA256"
+      },
+      {
+        "name": "Change to \"SHA512\"",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "(MD2|MD4|MD5|RIPEMD|RIPEMD(128|256|160|320)|(SHA0|SHA-0|SHA1|SHA-1))",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "SHA512"
+      }
+    ]
+  },
+  {
+    "id": "DS197800",
+    "name": "Weak/Broken Hash Algorithm",
+    "overrides": [
+      "DS126858"
+    ],
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.HashAlgorithm.BrokenOrWeak"
+    ],
+    "applies_to": [
+      "objective-c"
+    ],
+    "severity": "critical",
+    "description": "A weak or broken hash algorithm was detected.",
+    "recommendation": "Use CC_SHA256 or CC_SHA512 instead.",
+    "rule_info": "DS197800.md",
+    "patterns": [
+      {
+        "pattern": "CC_(MD2|MD4|MD5|SHA1)",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": [
+      {
+        "name": "Change to SHA-256",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "CC_(MD2|MD4|MD5|SHA1)",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "CC_SHA256"
+      },
+      {
+        "name": "Change to SHA-512",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "CC_(MD2|MD4|MD5|SHA1)",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "CC_SHA512"
+      }
+    ]
+  },
+  {
+    "id": "DS128420",
+    "name": "Weak/Broken Hash Algorithm",
+    "overrides": [
+      "DS126858"
+    ],
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.HashAlgorithm.BrokenOrWeak"
+    ],
+    "applies_to": [
+      "php"
+    ],
+    "severity": "critical",
+    "description": "A weak or broken hash algorithm was detected.",
+    "recommendation": "When using hash(), use sha256 or sha512 as the algorithms instead",
+    "rule_info": "DS128420.md",
+    "patterns": [
+      {
+        "pattern": "hash\\s*\\(\\s*[\\'\\\"](md2|md4|md5|sha1|sha224|ripemd128|ripemd160|ripemd256|ripemd320)[\\'\\\"](.*)\\)\\s*;",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": [
+      {
+        "name": "Change to SHA-256",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "hash\\s*\\(\\s*[\\'\\\"](md2|md4|md5|sha1|sha224|ripemd128|ripemd160|ripemd256|ripemd320)[\\'\\\"](.*)\\)\\s*;",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "hash('sha256'$2);"
+      },
+      {
+        "name": "Change to SHA-512",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "hash\\s*\\(\\s*[\\'\\\"](md2|md4|md5|sha1|sha224|ripemd128|ripemd160|ripemd256|ripemd320)[\\'\\\"](.*)\\)\\s*;",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "hash('sha512'$2);"
+      }
+    ]
+  },
+  {
+    "id": "DS108647",
+    "name": "Do not use broken/weak cryptographic hash algorithms",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.HashAlgorithm.BrokenOrWeak"
+    ],
+    "applies_to": [
+      "ruby"
+    ],
+    "severity": "critical",
+    "description": "Avoid using broken or weak hash algorithms.",
+    "recommendation": "Use Digest::SHA256 or Digest::SHA512",
+    "rule_info": "DS108647.md",
+    "patterns": [
+      {
+        "pattern": "Digest::(MD5|RMD160|SHA1)",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": [
+      {
+        "name": "Change to SHA-256",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "Digest::(MD5|RMD160|SHA1)",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "Digest::SHA256"
+      },
+      {
+        "name": "Change to SHA-512",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "Digest::(MD5|RMD160|SHA1)",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "Digest::SHA512"
+      }
+    ]
+  },
+  {
+    "id": "DS196098",
+    "name": "Do not use broken/weak cryptographic hash algorithms",
+    "overrides": [
+      "DS126858"
+    ],
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.HashAlgorithm.BrokenOrWeak"
+    ],
+    "applies_to": [
+      "python"
+    ],
+    "severity": "critical",
+    "description": "Avoid using broken or weak hash algorithms.",
+    "recommendation": "Use hashlib.sha256 instead.",
+    "rule_info": "DS196098.md",
+    "patterns": [
+      {
+        "pattern": "(md5|sha)\\.new\\(",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": [
+      {
+        "name": "Change to hashlib.sha256",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "(md5|sha)\\.new\\(",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "hashlib.sha256("
+      },
+      {
+        "name": "Change to hashlib.sha512",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "(md5|sha)\\.new\\(",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "hashlib.sha512("
+      }
+    ]
+  },
+  {
+    "id": "DS168931",
+    "name": "Do not use broken/weak cryptographic hash algorithms",
+    "overrides": [
+      "DS126858"
+    ],
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.HashAlgorithm.BrokenOrWeak"
+    ],
+    "applies_to": [
+      "csharp"
+    ],
+    "severity": "critical",
+    "description": "A potentially weak hashing algorithm was used.",
+    "recommendation": "Use SHA-256 instead.",
+    "rule_info": "DS168931.md",
+    "patterns": [
+      {
+        "pattern": "MD5CryptoServiceProvider",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": [
+      {
+        "name": "Change to SHA-256",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "MD5CryptoServiceProvider",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "SHA256CryptoServiceProvider"
+      },
+      {
+        "name": "Change to SHA-512",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "MD5CryptoServiceProvider",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "SHA512CryptoServiceProvider"
+      }
+    ]
+  },
+  {
+    "id": "DS197836",
+    "name": "Do not take the hash of low-entropy content.",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.HashAlgorithm.InsufficientEntropy"
+    ],
+    "applies_to": null,
+    "severity": "important",
+    "description": "Taking a hash of a time value is suspicious, as there is insufficient entropy to protect against brute-force attacks.",
+    "recommendation": "",
+    "rule_info": "DS197836.md",
+    "patterns": [
+      {
+        "pattern": "(MD4|MD5|(SHA(1|224|256|384|512))).*Time",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS188250",
+    "name": "Missing initialization vector",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.Symmetric.InitializationVector.Missing"
+    ],
+    "applies_to": [
+      "php"
+    ],
+    "severity": "important",
+    "description": "The mcrypt_encrypt function was used without an initialization vector.",
+    "recommendation": "Add an initialization vector or consider a different cipher mode",
+    "rule_info": "DS188250.md",
+    "patterns": [
+      {
+        "pattern": "mcrypt_encrypt\\s*\\([^,]+,[^,]+,[^,]+,[^,]+\\);",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": [
+      {
+        "name": "Add initialization vector",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "(mcrypt_encrypt\\s*\\([^,]+,[^,]+,[^,]+,[^,]+)(\\);)",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "$1, <$iv>$2"
+      }
+    ]
+  },
+  {
+    "id": "DS128921",
+    "name": "Hardcoded initialization vector size",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.Symmetric.InitializationVector.HardcodedSize"
+    ],
+    "applies_to": [
+      "php"
+    ],
+    "severity": "moderate",
+    "description": "An initialization vector was created to a static size, rather than determining it based on the encryption algorithm used.",
+    "recommendation": "Use mcrypt_get_iv_size to get the correct IV size based on the cipher and mode.",
+    "rule_info": "DS128921.md",
+    "patterns": [
+      {
+        "pattern": "mcrypt_create_iv\\s*\\(\\s*\\d.*",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS162092",
+    "name": "Do not leave debug code in production",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Hygiene.Network.AccessingLocalhost"
+    ],
+    "applies_to": null,
+    "severity": "manual-review",
+    "description": "Accessing localhost could indicate debug code, or could hinder scaling.",
+    "recommendation": "",
+    "rule_info": "DS162092.md",
+    "patterns": [
+      {
+        "pattern": "\\blocalhost\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\b127.0.0.1\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS300001",
+    "name": "Vulnerable NuGet Library",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Vulerable-Dependency.Library.NuGet"
+    ],
+    "applies_to": [
+      "packages.config"
+    ],
+    "severity": "moderate",
+    "description": "Vulnerabilities in .NET Core, ASP.NET Core Could Allow Elevation of Privilege",
+    "recommendation": "Upgrade this package to a later, unaffected version.",
+    "rule_info": "4021279",
+    "patterns": [
+      {
+        "pattern": "<package id=\"System.Text.Encodings.Web\" version=\"(4\\.0\\.0|4\\.3\\.0)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"System.Net.Http\" version=\"(4\\.1\\.1|4\\.3\\.1)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"System.Net.Http.WinHttpHandler\" version=\"(4\\.0\\.1|4\\.3\\.0)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"System.Net.Security\" version=\"(4\\.0\\.0|4\\.3\\.0)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"System.Net.WebSockets.Client\" version=\"(4\\.0\\.0|4\\.3\\.0)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc\" version=\"(1\\.0\\.0|1\\.0\\.1|1\\.0\\.2|1\\.0\\.3|1\\.1\\.0|1\\.1\\.1|1\\.1\\.2)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.Core\" version=\"(1\\.0\\.0|1\\.0\\.1|1\\.0\\.2|1\\.0\\.3|1\\.1\\.0|1\\.1\\.1|1\\.1\\.2)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.Abstractions\" version=\"(1\\.0\\.0|1\\.0\\.1|1\\.0\\.2|1\\.0\\.3|1\\.1\\.0|1\\.1\\.1|1\\.1\\.2)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.ApiExplorer\" version=\"(1\\.0\\.0|1\\.0\\.1|1\\.0\\.2|1\\.0\\.3|1\\.1\\.0|1\\.1\\.1|1\\.1\\.2)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.Cors\" version=\"(1\\.0\\.0|1\\.0\\.1|1\\.0\\.2|1\\.0\\.3|1\\.1\\.0|1\\.1\\.1|1\\.1\\.2)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.DataAnnotations\" version=\"(1\\.0\\.0|1\\.0\\.1|1\\.0\\.2|1\\.0\\.3|1\\.1\\.0|1\\.1\\.1|1\\.1\\.2)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.Formatters.Json\" version=\"(1\\.0\\.0|1\\.0\\.1|1\\.0\\.2|1\\.0\\.3|1\\.1\\.0|1\\.1\\.1|1\\.1\\.2)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.Formatters.Xml\" version=\"(1\\.0\\.0|1\\.0\\.1|1\\.0\\.2|1\\.0\\.3|1\\.1\\.0|1\\.1\\.1|1\\.1\\.2)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.Localization\" version=\"(1\\.0\\.0|1\\.0\\.1|1\\.0\\.2|1\\.0\\.3|1\\.1\\.0|1\\.1\\.1|1\\.1\\.2)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.Razor.Host\" version=\"(1\\.0\\.0|1\\.0\\.1|1\\.0\\.2|1\\.0\\.3|1\\.1\\.0|1\\.1\\.1|1\\.1\\.2)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.Razor\" version=\"(1\\.0\\.0|1\\.0\\.1|1\\.0\\.2|1\\.0\\.3|1\\.1\\.0|1\\.1\\.1|1\\.1\\.2)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.TagHelpers\" version=\"(1\\.0\\.0|1\\.0\\.1|1\\.0\\.2|1\\.0\\.3|1\\.1\\.0|1\\.1\\.1|1\\.1\\.2)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.ViewFeatures\" version=\"(1\\.0\\.0|1\\.0\\.1|1\\.0\\.2|1\\.0\\.3|1\\.1\\.0|1\\.1\\.1|1\\.1\\.2)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.WebApiCompatShim\" version=\"(1\\.0\\.0|1\\.0\\.1|1\\.0\\.2|1\\.0\\.3|1\\.1\\.0|1\\.1\\.1|1\\.1\\.2)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS300004",
+    "name": "Vulnerable NuGet Library",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Vulerable-Dependency.Library.NuGet"
+    ],
+    "applies_to": [
+      "packages.config"
+    ],
+    "severity": "moderate",
+    "description": "Vulnerability in ASP.NET Core MVC 1.1.0 Could Allow Denial of Service",
+    "recommendation": "Upgrade this package to a later, unaffected version.",
+    "rule_info": "4010983",
+    "patterns": [
+      {
+        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.Core\" version=\"(1\\.1\\.0)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS300005",
+    "name": "Vulnerable NuGet Library",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Vulerable-Dependency.Library.NuGet"
+    ],
+    "applies_to": [
+      "packages.config"
+    ],
+    "severity": "moderate",
+    "description": " Vulnerabilities in Identity Model Extensions Token Signing Verification Could Allow Elevation of Privilege",
+    "recommendation": "Upgrade this package to a later, unaffected version.",
+    "rule_info": "3214296",
+    "patterns": [
+      {
+        "pattern": "<package id=\"Microsoft.IdentityModel.Tokens\" version=\"(5\\.1\\.0)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS300006",
+    "name": "Vulnerable NuGet Library",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Vulerable-Dependency.Library.NuGet"
+    ],
+    "applies_to": [
+      "packages.config"
+    ],
+    "severity": "moderate",
+    "description": "Vulnerabilities in ASP.NET Core View Components Could Allow Elevation of Privilege",
+    "recommendation": "Upgrade this package to a later, unaffected version.",
+    "rule_info": "3181759",
+    "patterns": [
+      {
+        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc\" version=\"(1\\.0\\.0)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.Abstractions\" version=\"(1\\.0\\.0)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.ApiExplorer\" version=\"(1\\.0\\.0)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.Core\" version=\"(1\\.0\\.0)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.Cors\" version=\"(1\\.0\\.0)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.DataAnnotations\" version=\"(1\\.0\\.0)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.Formatters.Json\" version=\"(1\\.0\\.0)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.Formatters.Xml\" version=\"(1\\.0\\.0)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.Localization\" version=\"(1\\.0\\.0)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.Razor\" version=\"(1\\.0\\.0)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.Razor.Host\" version=\"(1\\.0\\.0)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.TagHelpers\" version=\"(1\\.0\\.0)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.ViewFeatures\" version=\"(1\\.0\\.0)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "<package id=\"Microsoft.AspNetCore.Mvc.WebApiCompatShim\" version=\"(1\\.0\\.0)\"",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS179924",
+    "name": "Do not copy a FILE object (CERT FIO38-C)",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "CERT.FIO38-C",
+      "C.DangerousFunctionCall"
+    ],
+    "applies_to": [
+      "cpp",
+      "c"
+    ],
+    "severity": "important",
+    "description": "The CERT Secure Coding Standard recommends that FILE objects not be copied.",
+    "recommendation": "Copy a pointer to the FILE object instead.",
+    "rule_info": "DS179924.md",
+    "patterns": [
+      {
+        "pattern": "FILE [a-z0-9_][^=]*=\\s*\\*",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS181731",
+    "name": "Don't pass user input to this function",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "PHP.Injection"
+    ],
+    "applies_to": [
+      "php"
+    ],
+    "severity": "critical",
+    "description": "Don't pass user input to this function.",
+    "recommendation": "Validate this data before passing it to the function.",
+    "rule_info": "DS181731.md",
+    "patterns": [
+      {
+        "pattern": "(include|require|include_once|require_once|passthru)\\s*\\(.*\\$_(GET|POST|REQUEST|COOKIES|FILES)",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS137038",
+    "name": "Notice: Outbound HTTP Connection",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "ThreatModel.Integration.HTTP"
+    ],
+    "applies_to": [
+      "ruby"
+    ],
+    "severity": "manual-review",
+    "description": "Inbound HTTP",
+    "recommendation": "",
+    "rule_info": "DS137038.md",
+    "patterns": [
+      {
+        "pattern": "\\bNet::HTTP\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS137138",
+    "name": "Insecure URL",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "ThreatModel.Integration.HTTP"
+    ],
+    "applies_to": null,
+    "severity": "moderate",
+    "description": "An HTTP-based URL without TLS was detected.",
+    "recommendation": "Update to an HTTPS-based URL if possible.",
+    "rule_info": "DS137138.md",
+    "patterns": [
+      {
+        "pattern": "http:",
+        "type": "regex",
+        "modifiers": [
+          "i"
+        ],
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "pattern": {
+          "pattern": "xmlns",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "search_in": null,
+        "negate_finding": true
+      }
+    ],
+    "fix_its": [
+      {
+        "name": "Change to HTTPS ",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "http:",
+          "type": "regex",
+          "modifiers": [
+            "i"
+          ],
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "https:"
+      }
+    ]
+  },
+  {
+    "id": "DS113853",
+    "name": "Do not set a custom execution policy.",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "ControlFlow.Permission.Evalation"
+    ],
+    "applies_to": [
+      "powershell"
+    ],
+    "severity": "moderate",
+    "description": "The Set-ExecutionPolicy cmdlet has been used to dynamically change the permissions available to PowerShell.",
+    "recommendation": "Avoid elevating privileges if possible.",
+    "rule_info": "DS113853.md",
+    "patterns": [
+      {
+        "pattern": "\\bSet-ExecutionPolicy\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS104456",
+    "name": "Use of restricted functions.",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Implementation.Scripting.PowerShell.DangeousFunction"
+    ],
+    "applies_to": [
+      "powershell"
+    ],
+    "severity": "important",
+    "description": "Use of restricted functions.",
+    "recommendation": "",
+    "rule_info": "DS104456.md",
+    "patterns": [
+      {
+        "pattern": "\\bGetDelegateForFunctionPointer\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bSystem.Runtime.InteropServices.Marshal\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bWriteByte\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bMicrosoft.Win32.UnsafeNativeMethods\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bPtrToStructure\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bStructureToPtr\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\b(NtCreateThreadEx|CreateRemoteThread)\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bInvoke\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bVirtualProtect\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\biex\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\b&\"\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\b& $\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS144886",
+    "name": "$_REQUEST should be avoided",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Implementation.PHP"
+    ],
+    "applies_to": [
+      "php"
+    ],
+    "severity": "moderate",
+    "description": "$_REQUEST combines POST, GET, and cookie values in one array, making it easy for an attacker to modify a POST or cookie value by instead putting it in a GET and sending the URL to the victim",
+    "recommendation": "Use $_POST, $_GET, $_COOKIE to scope to the expected delivery method for a value ",
+    "rule_info": "DS144886.md",
+    "patterns": [
+      {
+        "pattern": "\\$_REQUEST",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": [
+      {
+        "name": "Change to $_GET",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "\\$_REQUEST",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "$_GET"
+      },
+      {
+        "name": "Change to $_POST",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "\\$_REQUEST",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "$_POST"
+      },
+      {
+        "name": "Change to $_COOKIE",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "\\$_REQUEST",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "$_COOKIE"
+      }
+    ]
+  },
+  {
+    "id": "DS163877",
+    "name": "XSS: Do not echo unencoded GET/POST/COOKIE values",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Implementation.PHP"
+    ],
+    "applies_to": [
+      "php"
+    ],
+    "severity": "moderate",
+    "description": "When using $_GET/POST/COOKIE values via echo, failure to  encode the values will lead to Cross Site Scription (XSS), where a malicious party can inject script into the webpage.",
+    "recommendation": "HTML Entity Encode (for content going into HTML) or URL Encode (for content going into JavaScript variables) the data",
+    "rule_info": "DS163877.md",
+    "patterns": [
+      {
+        "pattern": "\\becho.*(\\$_(POST|GET|REQUEST|COOKIE)\\[.*\\]).*;",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "pattern": {
+          "pattern": "\\b(htmlentities|htmlspecialchars|rawurlencode|urlencode)\\s*\\(.*(\\$_(POST|GET|REQUEST|COOKIE)\\[.*\\]).*\\)",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "search_in": "finding-only",
+        "negate_finding": true
+      }
+    ],
+    "fix_its": [
+      {
+        "name": "HTML Entity encode the data",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "(\\$_(POST|GET|REQUEST|COOKIE)\\[.*\\])",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "htmlentities($1)"
+      },
+      {
+        "name": "URL encode the data",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "(\\$_(POST|GET|REQUEST|COOKIE)\\[.*\\])",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "rawurlencode($1)"
+      }
+    ]
+  },
+  {
+    "id": "DS144436",
+    "name": "Do not use outdated SSL/TLS protocols",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.Protocol.TLS"
+    ],
+    "applies_to": [
+      "csharp"
+    ],
+    "severity": "important",
+    "description": "It's usually better to rely on the operating system configuration, rather than hardcoding a specific SecurityProtocolType.",
+    "recommendation": "Either leave off or set to SecurityProtocolType.Tls12;",
+    "rule_info": "DS144436.md",
+    "patterns": [
+      {
+        "pattern": "\\bSecurityProtocolType\\.(Ssl3|Tls|Tls11)\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": [
+      {
+        "name": "Change to SecurityProtocolType.Tls12",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "\\bSecurityProtocolType\\.(Ssl3|Tls|Tls11)\\b",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "SecurityProtocolType.Tls12"
+      }
+    ]
+  },
+  {
+    "id": "DS127101",
+    "name": "Hardcoding TLS protocol version",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.Protocol.TLS"
+    ],
+    "applies_to": [
+      "cpp"
+    ],
+    "severity": "moderate",
+    "description": "It's usually better to rely on the operating system configuration, rather than hardcoding a specific list of protocols.",
+    "recommendation": "",
+    "rule_info": "DS127101.md",
+    "patterns": [
+      {
+        "pattern": "\\bSecPkgCred_SupportedProtocols\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS169125",
+    "name": "Do not use outdated SSL/TLS protocols",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.Protocol.TLS"
+    ],
+    "applies_to": null,
+    "severity": "important",
+    "description": "An outdated SSL/TLS protocol version is specified.",
+    "recommendation": "Use TLS 1.2",
+    "rule_info": "DS169125.md",
+    "patterns": [
+      {
+        "pattern": "\\b(SSLv?2|SSLv?3|TLSv?1|TLSv?10)\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS169126",
+    "name": "An Outdated or Banned SSL/TLS Protocol is Used",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.Protocol.Banned"
+    ],
+    "applies_to": null,
+    "severity": "important",
+    "description": "An Outdated or Banned SSL/TLS Protocol is Used",
+    "recommendation": "Use TLS 1.2",
+    "rule_info": "DS169126.md",
+    "patterns": [
+      {
+        "pattern": "(SSL|TLS)v(2|23|3|1)_(client|server)",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bSSLv2\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bSSLv3\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bTLSv1\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bTLSv10\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS169127",
+    "name": "An Outdated or Banned SSL/TLS Protocol is Used",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.Protocol.Banned"
+    ],
+    "applies_to": [
+      "cpp",
+      "objective-c"
+    ],
+    "severity": "important",
+    "description": "An Outdated or Banned SSL/TLS Protocol is Used",
+    "recommendation": "Use TLS 1.2",
+    "rule_info": "DS169126.md",
+    "patterns": [
+      {
+        "pattern": "\\bSECURITY_FLAG_40BIT\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bSECURITY_FLAG_56BIT\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bSECURITY_FLAG_NORMALBITNESS\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bSECURITY_FLAG_PCT\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bSECURITY_FLAG_PCT4\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bSECURITY_FLAG_SSL\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bSECURITY_FLAG_SSL3\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bSECURITY_FLAG_STRENGTH_MEDIUM\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bSECURITY_FLAG_STRENGTH_WEAK\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bSECURITY_FLAG_UNKNOWNBIT\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bWINHTTP_FLAG_SECURE_PROTOCOL_SSL2\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bWINHTTP_FLAG_SECURE_PROTOCOL_SSL3\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bWINHTTP_FLAG_SECURE_PROTOCOL_TLS1\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bWINHTTP_FLAG_SECURE_PROTOCOL_ALL\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bSECURITY_FLAG_STRENGTH_MEDIUM\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bSECURITY_FLAG_STRENGTH_WEAK\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "SP_PROT_(PCT1|SSL2|SSL3|TLS1|TLS1_0)_(CLIENT|SERVER)",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bNSStreamSocketSecurityLevelNone\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bNSStreamSocketSecurityLevelSSLv2\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bNSStreamSocketSecurityLevelSSLv3\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bNSStreamSocketSecurityLevelTLSv1\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bkCFStreamSocketSecurityLevelNone\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bkCFStreamSocketSecurityLevelSSLv2\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bkCFStreamSocketSecurityLevelSSLv3\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bkCFStreamSocketSecurityLevelTLSv1\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bkSSLProtocolUnknown \\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bkSSLProtocol3\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bkTLSProtocol1\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bkDTLSProtocol1\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bkSSLProtocol2\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bkSSLProtocol3Only\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bkTLSProtocol1Only\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bkSSLProtocolAll\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS169128",
+    "name": "An Outdated or Banned SSL/TLS Protocol is Used",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.Protocol.Banned"
+    ],
+    "applies_to": [
+      "python"
+    ],
+    "severity": "important",
+    "description": "An Outdated or Banned SSL/TLS Protocol is Used",
+    "recommendation": "Use TLS 1.2",
+    "rule_info": "DS169126.md",
+    "patterns": [
+      {
+        "pattern": "\\bPROTOCOL_SSLv2\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bPROTOCOL_SSLv23\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bPROTOCOL_SSLv3\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bPROTOCOL_TLSv1\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS148264",
+    "name": "Do not use weak/non-cryptographic random number generators",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.PRNG.Weak"
+    ],
+    "applies_to": null,
+    "severity": "important",
+    "description": "Use cryptographic random numbers generators for anything even close to a security function.",
+    "recommendation": "Replacements depend on language.",
+    "rule_info": "DS148264.md",
+    "patterns": [
+      {
+        "pattern": "\\bDUAL_EC_DRBG\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bpseudoRandomBytes\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\brand\\(",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "random_shuffle\\(",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bshuffle\\(",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bRAND_MAX\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\brand\\(\\s*\\)\\s*%",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bmwc1616\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\b(32969|18273)\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bSystem.Random\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\b\\bRandom\\(\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\barc4random\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS149435",
+    "name": "Do not seed randomness based on system time or a static value.",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.WeakRandomness"
+    ],
+    "applies_to": null,
+    "severity": "critical",
+    "description": "Passing a predicable value to srand() is very insecure and should be avoided.",
+    "recommendation": "",
+    "rule_info": "DS149435.md",
+    "patterns": [
+      {
+        "pattern": "\\bsrand\\(\\s*time\\(",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "\\bsrand\\(\\s*\\d+\\s*\\)",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS173237",
+    "name": "Do not store tokens or keys in source code.",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Implementation.Privacy.Token"
+    ],
+    "applies_to": null,
+    "severity": "important",
+    "description": "A token or key was found in source code. If this represents a secret, it should be moved somewhere else.",
+    "recommendation": "",
+    "rule_info": "DS173237.md",
+    "patterns": [
+      {
+        "pattern": "[a-f0-9]{30,}",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS117838",
+    "name": "Do not store tokens or keys in source code.",
+    "overrides": [
+      "DS173237"
+    ],
+    "schema_version": 0,
+    "tags": [
+      "Implementation.Privacy.Token"
+    ],
+    "applies_to": null,
+    "severity": "critical",
+    "description": "A token or key was found in source code. If this represents a secret, it should be moved somewhere else.",
+    "recommendation": "",
+    "rule_info": "DS117838.md",
+    "patterns": [
+      {
+        "pattern": "(secret|license|key|pass).*[a-f0-9]{30,}",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS112266",
+    "name": "ProtectedData used without additional entropy",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Storage.Windows.DPAPI"
+    ],
+    "applies_to": [
+      "csharp"
+    ],
+    "severity": "moderate",
+    "description": "The ProtectedData class should be used with additional entropy to reduce the risk of other application calling DPAPI to access the data.",
+    "recommendation": "Add additional entropy (per-application secret).",
+    "rule_info": "DS112266.md",
+    "patterns": [
+      {
+        "pattern": "ProtectedData\\.Protect.*,\\s*null.*",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": [
+      {
+        "name": "Add entropy placeholder",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "(ProtectedData\\.Protect[^,]+,\\s*)null(.*)",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "$1<entropy>$2"
+      }
+    ]
+  },
+  {
+    "id": "DS191340",
+    "name": "Do not store sensitive data in NSUserDefaults.",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Storage.Apple.iOS.UserDefaults.SensitiveData"
+    ],
+    "applies_to": [
+      "objective-c"
+    ],
+    "severity": "moderate",
+    "description": "Do not store sensitive data in NSUserDefaults.",
+    "recommendation": "Consider another mechanism instead.",
+    "rule_info": "DS191340.md",
+    "patterns": [
+      {
+        "pattern": "NSUserDefaults \\*(.*) = \\[NSUserDefaults standardUserDefaults\\];(\\n.*){1,5}$1 .*setString:(password|key)",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS161085",
+    "name": "Problematic C function detected (malloc)",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "API.DangerousAPI.ProblematicFunction"
+    ],
+    "applies_to": [
+      "c",
+      "cpp",
+      "objective-c"
+    ],
+    "severity": "best-practice",
+    "description": "If the value provided to malloc is the result of unsafe integer math, it can result in an exploitable condition. ",
+    "recommendation": "calloc handles the most common integer math in memory allocation (# of elements * their size) with error handling to prevent overflows in most implementations, and zeros out memory",
+    "rule_info": "DS161085.md",
+    "patterns": [
+      {
+        "pattern": "\\bmalloc\\s*\\(([^,\\)]+)\\)",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": [
+      {
+        "name": "Change to calloc ",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "\\bmalloc\\s*\\(([^,\\)]+)\\)",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "calloc(<number of elements>, <size of each element>)"
+      }
+    ]
+  },
+  {
+    "id": "DS121708",
+    "name": "Problematic C function detected (memcpy)",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "API.DangerousAPI.ProblematicFunction"
+    ],
+    "applies_to": [
+      "c",
+      "cpp",
+      "objective-c"
+    ],
+    "severity": "best-practice",
+    "description": "There are a number of conditions in which memcpy can introduce a vulnerability (mismatched buffer sizes, null pointers, etc.). More secure alternitives perform additional validation of the source and destination buffer",
+    "recommendation": "Use memcpy_s if possible.",
+    "rule_info": "DS121708.md",
+    "patterns": [
+      {
+        "pattern": "\\bmemcpy\\s*\\(([^,]+),([^,]+),([^,\\)]+)\\)",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": [
+      {
+        "name": "Change to memcpy_s (Recommended for VC++)",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "\\bmemcpy\\s*\\(([^,]+),([^,]+),([^,\\)]+)\\)",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "memcpy_s($1, <size of $1>, $2, $3)"
+      }
+    ]
+  },
+  {
+    "id": "DS140021",
+    "name": "Problematic C function detected (strlen)",
+    "overrides": [
+      "DS154189"
+    ],
+    "schema_version": 0,
+    "tags": [
+      "API.DangerousAPI.ProblematicFunction"
+    ],
+    "applies_to": [
+      "c",
+      "cpp",
+      "objective-c"
+    ],
+    "severity": "best-practice",
+    "description": "If a string is missing a null terminator, strlen will read past the end of the buffer",
+    "recommendation": "In instances where you know the maximum size of a string's buffer, use strlen_s or strnlen to prevent over-reading",
+    "rule_info": "DS140021.md",
+    "patterns": [
+      {
+        "pattern": "\\bstrlen\\s*\\(([^,\\)]+)\\)",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": [
+      {
+        "name": "Change to strlen_s (Recommended for VC++)",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "\\bstrlen\\s*\\(([^,\\)]+)\\)",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "strlen_s($1, <size of $1>)"
+      },
+      {
+        "name": "Change to strnlen",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "\\bstrlen\\s*\\(([^,\\)]+)\\)",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "strnlen($1, <size of $1>)"
+      }
+    ]
+  },
+  {
+    "id": "DS176209",
+    "name": "Suspicious comment",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Hygiene.Comment.Suspicious"
+    ],
+    "applies_to": null,
+    "severity": "manual-review",
+    "description": "A \"TODO\" or similar was left in source code, possibly indicating incomplete functionality",
+    "recommendation": "",
+    "rule_info": "DS176209.md",
+    "patterns": [
+      {
+        "pattern": "\\b(TODO|FIXME|REMOVEME|HACK|BLACK MAGIC)\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code",
+          "comment",
+          "comment"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS224000",
+    "name": "Dangerous T-SQL Command",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "API.T-SQL.Dangerous"
+    ],
+    "applies_to": [
+      "sql"
+    ],
+    "severity": "important",
+    "description": "These stored procedures provide access to system resources and should only be used with trusted data.",
+    "recommendation": "Ideally, do not use these functions as they are quite unsafe.  If necessary, audit to ensure no untrusted data can reach this stored procedure",
+    "rule_info": "DS224000.md",
+    "patterns": [
+      {
+        "pattern": "\\b(xp_cmdshell|xp_regread|xp_instance_regread|xp_regwrite|sp_makewebtask|xp_sendmail|sp_configure|sp_executesql|dbcc writepage)\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS109733",
+    "name": "Source implementation of a weak/broken cryptography hash function",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.HashAlgorithm.WeakOrBrokenImplementation"
+    ],
+    "applies_to": null,
+    "severity": "critical",
+    "description": "An implementation of a weak/broken hash function was found in source code.",
+    "recommendation": "Do not use MD5, and always prefer OS- or library-provided cryptography implementations.",
+    "rule_info": "DS109733.md",
+    "patterns": [
+      {
+        "pattern": "242070db|02441453|db702024|53144402|3572445317",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      },
+      {
+        "pattern": "98BADCFE|FEDCBC98|C3D2E1F0|F0E1D2C3",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS187371",
+    "name": "A weak cipher mode of operation was used",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.Symmetric.CipherMode.Weak"
+    ],
+    "applies_to": null,
+    "severity": "important",
+    "description": "A potentially weak cipher mode of operation was used.",
+    "recommendation": "Consider using CBC, CTR, or GCM.",
+    "rule_info": "DS187371.md",
+    "patterns": [
+      {
+        "pattern": "\\b(ECB|OFB|CFB|CTS|PCBC|GMAC|XCBC|IACBC|IAPM|EAX|OCB|CWC|AEAD|LRW|XEX|XTS|CMC|EME|CBCMAC|OMAC|PMAC)\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": null
+  },
+  {
+    "id": "DS182720",
+    "name": "A weak cipher mode of operation was used",
+    "overrides": null,
+    "schema_version": 0,
+    "tags": [
+      "Cryptography.Symmetric.CipherMode.Weak"
+    ],
+    "applies_to": [
+      "php"
+    ],
+    "severity": "important",
+    "description": "A potentially weak cipher mode of operation was used.",
+    "recommendation": "Consider using CBC, CTR, or GCM.",
+    "rule_info": "DS182720.md",
+    "patterns": [
+      {
+        "pattern": "\\bMCRYPT_MODE_(ECB|CFB|OFB|NOFB|STREAM)\\b",
+        "type": "regex",
+        "modifiers": null,
+        "scopes": [
+          "code",
+          "code"
+        ]
+      }
+    ],
+    "conditions": [],
+    "fix_its": [
+      {
+        "name": "Change cipher mode to CBC",
+        "type": "regex-replace",
+        "pattern": {
+          "pattern": "MCRYPT_MODE_(ECB|CFB|OFB|NOFB|STREAM)",
+          "type": "regex",
+          "modifiers": null,
+          "scopes": [
+            "code",
+            "code"
+          ]
+        },
+        "replacement": "MCRYPT_MODE_CBC"
       }
     ]
   }

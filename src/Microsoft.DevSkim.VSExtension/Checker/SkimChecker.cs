@@ -23,6 +23,7 @@ namespace Microsoft.DevSkim.VSExtension
 
         private readonly DevSkimProvider _provider;
         private readonly ITextBuffer _buffer;
+        private readonly ITextView _textView;
         private readonly Dispatcher _uiThreadDispatcher;        
 
         private IClassifier _classifier;
@@ -42,6 +43,7 @@ namespace Microsoft.DevSkim.VSExtension
         {
             _provider = provider;
             _buffer = buffer;
+            _textView = textView;
             _currentSnapshot = buffer.CurrentSnapshot;
 
             // Get the name of the underlying document buffer
@@ -209,29 +211,32 @@ namespace Microsoft.DevSkim.VSExtension
                     bool anyNewErrors = false;
 
                     // provide whole line to processor so it has complete overview of the scanned code                    
-                    string text = line.GetText();
+                    string text = _textView.TextSnapshot.GetText(); //line.GetText();
                     
-                    Problem[] issues = SkimShim.Analyze(text, line.Snapshot.ContentType.TypeName, this.FilePath);
-                    foreach(Problem result in issues)
+                    Issue[] issues = SkimShim.Analyze(text, line.Snapshot.ContentType.TypeName, this.FilePath);
+                    foreach(Issue issue in issues)
                     {
-                        int errorStart = result.Issue.Index;
-                        int errorLength = result.Issue.Length;
-                        if (errorLength > 0)    // Ignore any single character error.
-                        {                            
-                            var newSpan = new SnapshotSpan(line.Start + errorStart, errorLength);
-                            var oldError = oldLineErrors.Find((e) => e.Span == newSpan);
+                        if (issue.Location != null && issue.Location.Line == line.LineNumber + 1)
+                        {
+                            int errorStart = issue.Location.Column-1;
+                            int errorLength = issue.Boundary.Length;
+                            if (errorLength > 0)    // Ignore any single character error.
+                            {
+                                var newSpan = new SnapshotSpan(line.Start + errorStart, errorLength);
+                                var oldError = oldLineErrors.Find((e) => e.Span == newSpan);
 
-                            if (oldError != null)
-                            {
-                                // There was a security error at the same span as the old one so we should be able to just reuse it.
-                                oldError.NextIndex = newSecurityErrors.Errors.Count;
-                                newSecurityErrors.Errors.Add(DevSkimError.Clone(oldError));    // Don't clone the old error yet
+                                if (oldError != null)
+                                {
+                                    // There was a security error at the same span as the old one so we should be able to just reuse it.
+                                    oldError.NextIndex = newSecurityErrors.Errors.Count;
+                                    newSecurityErrors.Errors.Add(DevSkimError.Clone(oldError));    // Don't clone the old error yet
+                                }
+                                else
+                                {
+                                    newSecurityErrors.Errors.Add(new DevSkimError(newSpan, issue.Rule, !issue.IsSuppressionInfo));
+                                    anyNewErrors = true;
+                                }
                             }
-                            else
-                            {
-                                newSecurityErrors.Errors.Add(new DevSkimError(newSpan, result.Issue.Rule, result.Actionable));
-                                anyNewErrors = true;
-                            }                            
                         }
                     }
 
@@ -304,7 +309,9 @@ namespace Microsoft.DevSkim.VSExtension
 
             // Tell the provider to mark all the sinks dirty (so, as a side-effect, they will start an update pass that will get the new snapshot
             // from the factory).
-            _provider.UpdateAllSinks();
+            SkimChecker skimChecker = new SkimChecker(this._provider, this._textView, this._buffer);
+            skimChecker._isDisposed = true;
+            _provider.UpdateAllSinks(skimChecker);
 
             foreach (var tagger in _activeTaggers)
             {

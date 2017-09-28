@@ -17,6 +17,8 @@ namespace Microsoft.DevSkim.VSExtension
     /// </summary>
     public partial class DevSkimToolTip : UserControl
     {
+        const string url_preffix = "https://github.com/Microsoft/DevSkim/blob/master/guidance/";
+
         public DevSkimToolTip(Rule rule)
         {
             InitializeComponent();
@@ -29,16 +31,16 @@ namespace Microsoft.DevSkim.VSExtension
             this.MessageBox.Foreground = new SolidColorBrush(Color.FromRgb(textColor.R, textColor.G, textColor.B));                        
             this.MessageBox.Text = rule.Description;
 
-            if (!string.IsNullOrEmpty(rule.Replecement))
+            if (!string.IsNullOrEmpty(rule.Recommendation))
             {
-                this.MessageBox.Text = string.Concat(this.MessageBox.Text, "\n", string.Format(Messages.FixGuidence, rule.Replecement));
+                this.MessageBox.Text = string.Concat(this.MessageBox.Text, "\n", string.Format(Messages.FixGuidence, rule.Recommendation));
             }
 
             this.SeverityBox.Foreground = new SolidColorBrush(Color.FromRgb(subColor.R, subColor.G, subColor.B));
             this.SeverityBox.Text = string.Format(Messages.Severity,rule.Severity);            
 
             this.Url.Foreground = new SolidColorBrush(Color.FromRgb(linkColor.R, linkColor.G, linkColor.B));
-            this.Url.NavigateUri = new Uri(rule.RuleInfo);
+            this.Url.NavigateUri = new Uri(url_preffix+rule.RuleInfo);
             
         }
 

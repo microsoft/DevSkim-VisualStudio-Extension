@@ -163,13 +163,13 @@ namespace Microsoft.DevSkim.VSExtension
             }
         }
 
-        public void UpdateAllSinks()
+        public void UpdateAllSinks(SkimChecker skimChecker)
         {
             lock (_managers)
             {
                 foreach (var manager in _managers)
                 {
-                    manager.UpdateSink();
+                    manager.UpdateSink(skimChecker);
                 }
             }
         }

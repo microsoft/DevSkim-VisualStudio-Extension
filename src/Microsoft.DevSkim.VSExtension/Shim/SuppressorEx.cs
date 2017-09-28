@@ -26,7 +26,7 @@ namespace Microsoft.DevSkim.VSExtension
 
         private void ParseLine()
         {
-            string pattern = @"\s*" + KeywordPrefix + @"\s+" + KeywordIgnore + @"\s([^\s]+)(\s+" + KeywordUntil + @"\s\d{4}-\d{2}-\d{2}|)";
+            string pattern = @"\s*" + KeywordPrefix + @"\s+" + KeywordIgnore + @"\s([a-zA-Z\d,:]+)(\s+" + KeywordUntil + @"\s\d{4}-\d{2}-\d{2}|)";
             Regex reg = new Regex(pattern);
             Match match = reg.Match(_text);
             if (match.Success)

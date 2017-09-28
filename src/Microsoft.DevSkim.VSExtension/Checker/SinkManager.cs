@@ -39,9 +39,9 @@ namespace Microsoft.DevSkim.VSExtension
             _sink.RemoveFactory(skimChecker.Factory);
         }
 
-        internal void UpdateSink()
+        internal void UpdateSink(SkimChecker skimChecker)
         {
-            _sink.FactorySnapshotChanged(null);
+            _sink.FactorySnapshotChanged(skimChecker.Factory);
         }
     }
 }

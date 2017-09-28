@@ -17,26 +17,57 @@ namespace Microsoft.DevSkim.VSExtension.Tests
             // Suppress Rule test
             string ruleId = "DS196098";
             string suppressedString = sup.SuppressIssue(ruleId);
-            string expected = "md5.new() #DevSkim: ignore DS196098";
+            string expected = "md5.new() #DevSkim: ignore DS196098\n";
             Assert.AreEqual(expected, suppressedString, "Supress Rule failed ");
 
             // Suppress Rule Until test
             DateTime expirationDate = DateTime.Now.AddDays(5);
             suppressedString = sup.SuppressIssue(ruleId, expirationDate);
-            expected = string.Format("md5.new() #DevSkim: ignore DS196098 until {0:yyyy}-{0:MM}-{0:dd}", expirationDate);
+            expected = string.Format("md5.new() #DevSkim: ignore DS196098 until {0:yyyy}-{0:MM}-{0:dd}\n", expirationDate);
             Assert.AreEqual(expected, suppressedString, "Supress Rule Until failed ");
 
             // Suppress All test
             suppressedString = sup.SuppressAll();
-            expected = "md5.new() #DevSkim: ignore all";
+            expected = "md5.new() #DevSkim: ignore all\n";
             Assert.AreEqual(expected, suppressedString, "Supress All failed");
 
             // Suppress All Until test            
             suppressedString = sup.SuppressAll(expirationDate);
-            expected = string.Format("md5.new() #DevSkim: ignore all until {0:yyyy}-{0:MM}-{0:dd}", expirationDate);
+            expected = string.Format("md5.new() #DevSkim: ignore all until {0:yyyy}-{0:MM}-{0:dd}\n", expirationDate);
             Assert.AreEqual(expected, suppressedString, "Supress All Until failed ");
         }
-        
+
+        [TestMethod]
+        public void SuppressMultiline_Test()
+        {
+            // Is supressed test
+            string testString = "var hash=MD5.Create();";
+            SuppressionEx sup = new SuppressionEx(testString, "csharp");
+            Assert.IsTrue(sup.Index < 0, "Suppression should not be flagged");
+
+            // Suppress Rule test
+            string ruleId = "DS126858";
+            string suppressedString = sup.SuppressIssue(ruleId);
+            string expected = "var hash=MD5.Create(); /*DevSkim: ignore DS126858*/";
+            Assert.AreEqual(expected, suppressedString, "Supress Rule failed ");
+
+            // Suppress Rule Until test
+            DateTime expirationDate = DateTime.Now.AddDays(5);
+            suppressedString = sup.SuppressIssue(ruleId, expirationDate);
+            expected = string.Format("var hash=MD5.Create(); /*DevSkim: ignore DS126858 until {0:yyyy}-{0:MM}-{0:dd}*/", expirationDate);
+            Assert.AreEqual(expected, suppressedString, "Supress Rule Until failed ");
+
+            // Suppress All test
+            suppressedString = sup.SuppressAll();
+            expected = "var hash=MD5.Create(); /*DevSkim: ignore all*/";
+            Assert.AreEqual(expected, suppressedString, "Supress All failed");
+
+            // Suppress All Until test            
+            suppressedString = sup.SuppressAll(expirationDate);
+            expected = string.Format("var hash=MD5.Create(); /*DevSkim: ignore all until {0:yyyy}-{0:MM}-{0:dd}*/", expirationDate);
+            Assert.AreEqual(expected, suppressedString, "Supress All Until failed ");
+        }
+
         [TestMethod]
         public void SuppressExisting_Test()
         {
