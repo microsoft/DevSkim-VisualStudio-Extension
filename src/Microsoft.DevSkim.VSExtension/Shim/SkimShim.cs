@@ -90,7 +90,7 @@ namespace Microsoft.DevSkim.VSExtension
         {
             Settings set = Settings.GetSettings();
 
-            ruleset = new Ruleset();
+            ruleset = new RuleSet();
             string rulesFile = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             rulesFile = Path.Combine(Path.Combine(rulesFile, "Content"), "devskim-rules.json");
             if (set.UseDefaultRules)
@@ -110,7 +110,7 @@ namespace Microsoft.DevSkim.VSExtension
         }
 
         private RuleProcessor processor = new RuleProcessor();
-        private Ruleset ruleset;
+        private RuleSet ruleset;
 
         private static SkimShim _instance = new SkimShim();
 
