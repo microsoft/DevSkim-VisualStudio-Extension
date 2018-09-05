@@ -20,11 +20,13 @@ namespace Microsoft.DevSkim.VSExtension
         private readonly ITrackingSpan _span;
         private readonly ITextSnapshot _snapshot;                
         private readonly CodeFix _fix;
+        private readonly Rule _rule;
         private readonly string _fixedCode;
         private readonly string _display;
 
-        public FixSuggestedAction(ITrackingSpan span, CodeFix fix)
+        public FixSuggestedAction(ITrackingSpan span, Rule rule, CodeFix fix)
         {
+            _rule = rule;
             _fix = fix;
             _span = span;
             _snapshot = span.TextBuffer.CurrentSnapshot;
@@ -115,6 +117,8 @@ namespace Microsoft.DevSkim.VSExtension
             }
 
             _span.TextBuffer.Replace(_span.GetSpan(_snapshot), _fixedCode);
+
+            VSPackage.LogEvent(string.Format("Fix invoked on {0} {1} fix {2}", _rule.Id, _rule.Name, _fix.Name));
         }
 
         public bool TryGetTelemetryId(out Guid telemetryId)

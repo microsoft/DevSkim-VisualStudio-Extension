@@ -48,7 +48,7 @@ namespace Microsoft.DevSkim.VSExtension
                 {                    
                     foreach (CodeFix fix in error.Rule.Fixes)
                     {
-                        fixActions.Add(new FixSuggestedAction(trackingSpan, fix));
+                        fixActions.Add(new FixSuggestedAction(trackingSpan, error.Rule, fix));
                     }
                 }
 
@@ -67,7 +67,9 @@ namespace Microsoft.DevSkim.VSExtension
                 {
                     suppActions.Add(new SuppressSuggestedAction(trackingSpan, null, suppressDays));
                     suppActions.Add(new SuppressSuggestedAction(trackingSpan, null));                    
-                }                
+                }
+
+                VSPackage.LogEvent(string.Format("Lightbulb invoked on {0} {1}", error.Rule.Id, error.Rule.Name));
 
                 // We don't want empty group and spacer in the pop-up menu
                 if (fixActions.Count > 0)
@@ -75,6 +77,7 @@ namespace Microsoft.DevSkim.VSExtension
                 else
                     return new SuggestedActionSet[] { new SuggestedActionSet(suppActions) };
             }
+
             return Enumerable.Empty<SuggestedActionSet>();
         }
 

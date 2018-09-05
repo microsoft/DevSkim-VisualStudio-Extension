@@ -21,6 +21,7 @@ namespace Microsoft.DevSkim.VSExtension
 
         public DevSkimToolTip(Rule rule)
         {
+            _rule = rule;
             InitializeComponent();
             System.Drawing.Color textColor = VSColorTheme.GetThemedColor(EnvironmentColors.ToolboxContentTextColorKey);
             System.Drawing.Color linkColor = VSColorTheme.GetThemedColor(ThemedDialogColors.HyperlinkColorKey);
@@ -40,8 +41,7 @@ namespace Microsoft.DevSkim.VSExtension
             this.SeverityBox.Text = string.Format(Messages.Severity,rule.Severity);            
 
             this.Url.Foreground = new SolidColorBrush(Color.FromRgb(linkColor.R, linkColor.G, linkColor.B));
-            this.Url.NavigateUri = new Uri(url_preffix+rule.RuleInfo);
-            
+            this.Url.NavigateUri = new Uri(url_preffix+rule.RuleInfo);            
         }
 
         private void Url_RequestNavigate(object sender, RequestNavigateEventArgs e)
@@ -51,6 +51,10 @@ namespace Microsoft.DevSkim.VSExtension
             browserService = Package.GetGlobalService(typeof(SVsWebBrowsingService)) as IVsWebBrowsingService;
 
             browserService.Navigate(this.Url.NavigateUri.AbsoluteUri, 0, out ppFrame);
+
+            VSPackage.LogEvent(string.Format("More info invoked on {0} {1}", _rule.Id, _rule.Name));
         }
+
+        private Rule _rule;
     }
 }
