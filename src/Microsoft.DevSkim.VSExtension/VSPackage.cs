@@ -36,6 +36,10 @@ namespace Microsoft.DevSkim.VSExtension
             
             // Initialize shared components
             DTE = GetService(typeof(DTE)) as DTE2;
+
+            // Initialize ActivityLog
+            _log = GetService(typeof(SVsActivityLog)) as IVsActivityLog;
+
         }
 
         /// <summary>
@@ -48,6 +52,15 @@ namespace Microsoft.DevSkim.VSExtension
                 return null;
 
             return DTE.Solution;
+        }
+
+        public static void LogEvent(string message)
+        {
+            if (_log == null) return;
+
+            int hr = _log.LogEntry((UInt32)__ACTIVITYLOG_ENTRYTYPE.ALE_INFORMATION,
+                "Microsoft.DevSkim.VSExtension",
+                message);
         }
 
         /// <summary>
@@ -69,5 +82,6 @@ namespace Microsoft.DevSkim.VSExtension
         }
 
         private static DTE2 DTE { get; set; }
+        private static IVsActivityLog _log;
     }
 }
