@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.DevSkim.VSExtension;
 
 namespace Microsoft.DevSkim.VSExtension.Tests
 {
