@@ -12,6 +12,9 @@ using Microsoft.VisualStudio.Shell;
 using EnvDTE80;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio;
+using System.Threading;
+using Task = System.Threading.Tasks.Task;
 
 namespace Microsoft.DevSkim.VSExtension
 {
@@ -19,27 +22,28 @@ namespace Microsoft.DevSkim.VSExtension
     /// This class implements a Visual Studio package that is registered for the Visual Studio IDE.
     /// The package class uses a number of registration attributes to specify integration parameters.
     /// </summary>
-    [PackageRegistration(UseManagedResourcesOnly = true)]
+    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [ProvideOptionPage(typeof(OptionsDialogPage), "DevSkim Options", "General", 100, 101, supportsAutomation: true)]
-    [ProvideAutoLoad(UIContextGuids80.SolutionExists)]
+    [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string, PackageAutoLoadFlags.BackgroundLoad)]
     [Guid(GuidStrings.GuidPackage)]
-    class VSPackage : Package
+    class VSPackage : AsyncPackage
     {
         /// <summary>
         /// Initialization of the package.  This is where you should put all initialization
         /// code that depends on VS services.
         /// </summary>
-        protected override void Initialize()
+        protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
+            await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
+
             base.Initialize();
             // TODO: add initialization code here
-            
+
             // Initialize shared components
-            DTE = GetService(typeof(DTE)) as DTE2;
+            DTE = await GetServiceAsync(typeof(DTE)) as DTE2;
 
             // Initialize ActivityLog
-            _log = GetService(typeof(SVsActivityLog)) as IVsActivityLog;
-
+            _log = await GetServiceAsync(typeof(SVsActivityLog)) as IVsActivityLog;
         }
 
         /// <summary>
